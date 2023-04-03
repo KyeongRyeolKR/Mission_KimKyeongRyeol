@@ -65,21 +65,8 @@ public class LikeablePersonController {
 
     @GetMapping("/delete/{id}")
     public String remove(@PathVariable("id") Long id) {
-        LikeablePerson likeablePerson = likeablePersonService.findById(id);
+        RsData<LikeablePerson> rsData = likeablePersonService.deleteById(id);
 
-        System.out.println("delete 쿼리문 시작");
-        likeablePersonService.delete(likeablePerson);
-        System.out.println("delete 쿼리문 종료");
-
-//        LikeablePerson likeablePerson = likeablePersonService.findById(id);
-//
-//        if(likeablePerson.getFromInstaMember().getId() != rq.getMember().getInstaMember().getId()) {
-//            return rq.redirectWithMsg("/likeablePerson/list", "삭제권한이 없습니다.");
-//        }
-//
-//        likeablePersonService.delete(id);
-//
-        return rq.redirectWithMsg("/likeablePerson/list", "삭제되었습니다.");
-
+        return rq.redirectWithMsg("/likeablePerson/list", rsData);
     }
 }

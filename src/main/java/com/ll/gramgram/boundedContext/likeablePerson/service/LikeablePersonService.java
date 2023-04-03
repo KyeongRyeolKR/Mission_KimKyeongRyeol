@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
+import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
@@ -15,10 +16,11 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional(readOnly = false)
 public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
+    private final Rq rq;
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
@@ -54,11 +56,20 @@ public class LikeablePersonService {
         return likeablePersonRepository.findById(likeablePersonId).orElse(null);
     }
 
-//    public void delete(Long likeablePersonId) {
-//        likeablePersonRepository.delete(likeablePersonId);
-//    }
-//
-    public void delete(LikeablePerson likeablePerson) {
-        likeablePersonRepository.delete(likeablePerson);
+    public RsData<LikeablePerson> deleteById(Long likeablePersonId) {
+        Optional<LikeablePerson> oLikeablePerson = likeablePersonRepository.findById(likeablePersonId);
+
+        if(oLikeablePerson.isEmpty()) {
+            return RsData.of("F-2", "없는 데이터입니다.");
+        }
+
+        // 로그인한 유저의 인스타멤버 ID와 해당 호감 데이터의 인스타멤버 ID가 같은지 확인
+        if(rq.getMember().getInstaMember().getId() != oLikeablePerson.get().getFromInstaMember().getId()) {
+            return RsData.of("F-1", "해당 호감 데이터는 당신의 것이 아닙니다.", oLikeablePerson.get());
+        }
+
+        likeablePersonRepository.deleteById(likeablePersonId);
+
+        return RsData.of("S-1", "해당 호감 상대가 삭제되었습니다.");
     }
 }

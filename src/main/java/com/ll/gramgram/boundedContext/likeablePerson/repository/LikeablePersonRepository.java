@@ -11,6 +11,7 @@ import java.util.List;
 public interface LikeablePersonRepository extends JpaRepository<LikeablePerson, Long> {
     List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId);
 
+    // JPQL을 이용한 호감 삭제 메소드
     @Modifying
     @Query("delete from LikeablePerson l where l.id = :id")
     void delete(@Param("id") Long id);
