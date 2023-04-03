@@ -15,7 +15,7 @@
 
 **[접근 방법]**
 
-* 호감 삭제를 구현 시, JPA의 delete()가 작동이 안되는 문제 발생(SQL문 자체가 생성이 안됨)
+**1) 호감 삭제를 구현 시, JPA의 delete()가 작동이 안되는 문제 발생(SQL문 자체가 생성이 안됨)**
   1. deleteById()는 되는지 확인 &rarr; 똑같이 무반응(SQL문 자체가 생성X)
   2. 디버깅으로 삭제할 데이터를 제대로 찾아왔는지 확인 &rarr; 제대로 찾음
   3. JPQL로 delete()를 만들면 작동이 되는지 확인 &rarr; 작동됨!
@@ -23,8 +23,12 @@
   5. 마지막으로 트랜잭션 문제인지 확인
   > **해결 방법**<br><br>서비스 클래스에 @Transactional(readOnly = true) 속성을 false로 바꿔주니 해결됨.<br>읽기 전용 모드였기에 수정/삭제 같은 작업이 안되었던 것<br><br>그렇다면 왜 JPQL로 했을 땐 실행이 된 것인가?<br>&rarr; @Query를 달면 영속성 컨테이너를 거치지 않고, 직접 데이터베이스로 질의작성을 하기 때문이다!<br><br> 만약 JPQL로 삭제를 구현한다면, 영속성 컨테이너와 데이터베이스 간의 데이터 일치성에 문제가 생길 수 있다. 그러므로 삭제하기 전, 영속성 컨테이너에서 먼저 조회 후 삭제를 진행해야한다!<br>이 부분은 영속성 컨테이너와 EntityManager를 더욱 자세히 공부해야겠다.
 
+<br>
 
-**[특이사항]**
+**2) 구글 소셜 로그인 구현 후, 400 오류: redirect_uri_mismatch 발생**
+  1. [Google Developers 공식 문서](https://developers.google.com/identity/protocols/oauth2/web-server?hl=ko#authorization-errors-redirect-uri-mismatch) `redirect_uri_mismatch` 파트 참조 &rarr; 승인 요청에 전달된 redirect_uri가 OAuth 클라이언트 ID의 승인된 리디렉션 URI와 일치하지 않는다. 라는 답변을 확인함!
+  2. 구글 클라우드 플랫폼 **승인된 리디렉션 URI** 설정을 다시 확인함
+  > **해결 방법**<br><br>구글 클라우드 플랫폼에서 기존에는 승인된 리디렉션 URI를 `http://localhost:8080/oauth2/authorization/google` 로 추가를 했었는데, 카카오 로그인 설정에도 `http://localhost:8080/oauth2/authorization/kakao` 라는 URI는 사용하지 않았었다! 그래서 구글 클라우드 설정에서 리디렉션 URI를 `http://localhost:8080/login/oauth2/code/google` 로 고쳐주니 정상 작동됐다.
 
 
 구현 과정에서 아쉬웠던 점 / 궁금했던 점을 정리합니다.
