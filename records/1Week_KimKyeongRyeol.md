@@ -30,6 +30,13 @@
   2. 구글 클라우드 플랫폼 **승인된 리디렉션 URI** 설정을 다시 확인함
   > **해결 방법**<br><br>구글 클라우드 플랫폼에서 기존에는 승인된 리디렉션 URI를 `http://localhost:8080/oauth2/authorization/google` 로 추가를 했었는데, 카카오 로그인 설정에도 `http://localhost:8080/oauth2/authorization/kakao` 라는 URI는 사용하지 않았었다! 그래서 구글 클라우드 설정에서 리디렉션 URI를 `http://localhost:8080/login/oauth2/code/google` 로 고쳐주니 정상 작동됐다.
 
+**3) 네이버 소셜 로그인 구현 후, 상단 id값 출력하는 부분 다른 소셜 로그인 형식과 다름**
+  1. 상단 id값 출력하는 부분이 `NAVER__{id=G2U4UwpPElaNBnGLBG9TvNWYjXJ5nA3cg9UNufVnxb0, gender=M, name=김경렬}` 형태로 나옴
+  2. 뒤에 `gender`, `name`이 출력? &rarr; 네이버 디벨로퍼에서 사용 API 점검 &rarr; 필수 항목에 `회원이름` `성별` 선택해제
+  3. `gender`와 `name`은 없어졌지만, 아직 JSON 형태로 출력되고 너무 길어서 마음에 안듬
+  > **해결 방법**<br><br>완벽한 해결법을 찾진 못했지만, 우선 필수 항목에 `회원이름`을 추가해서 너무 길었던 `고유 id값` 대신 이름을 출력하게 했다.<br>ex) NAVER__김경렬<br><br>***새로운 문제 발견***<br>DB MEMBER 테이블에 username이 `NAVER__김경렬`과 같이 저장되어서 동명이인이 네이버 로그인으로 가입할 경우, username 컬럼은 UNIQUE 속성이기에 오류가 날 수 있다!<br><br>&rarr; 임시 고유 값을 추가해주거나 길어도 원래의 id를 출력하게 해야하나..? (해결 안됨)
+
+**[특이사항]**
 
 구현 과정에서 아쉬웠던 점 / 궁금했던 점을 정리합니다.
 
