@@ -64,13 +64,17 @@ public class LikeablePersonService {
             return RsData.of("F-2", "없는 데이터입니다.");
         }
 
-        // 로그인한 유저의 인스타멤버 ID와 해당 호감 데이터의 인스타멤버 ID가 같은지 확인
-        if(!Objects.equals(loginMember.getInstaMember().getId(), oLikeablePerson.get().getFromInstaMember().getId())) {
+        if(!canDelete(loginMember, oLikeablePerson.get())) {
             return RsData.of("F-1", "해당 호감 데이터는 당신의 것이 아닙니다.", oLikeablePerson.get());
         }
 
         likeablePersonRepository.deleteById(likeablePersonId);
 
         return RsData.of("S-1", "해당 호감 상대가 삭제되었습니다.");
+    }
+
+    // member 가 likeablePerson 을 삭제할 권한이 있는지 체크
+    public boolean canDelete(Member member, LikeablePerson likeablePerson) {
+        return Objects.equals(member.getInstaMember().getId(), likeablePerson.getFromInstaMember().getId());
     }
 }
