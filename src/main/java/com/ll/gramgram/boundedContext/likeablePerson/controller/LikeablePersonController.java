@@ -65,7 +65,7 @@ public class LikeablePersonController {
 
     @GetMapping("/delete/{id}")
     public String remove(@PathVariable("id") Long id) {
-        RsData<LikeablePerson> rsData = likeablePersonService.deleteById(id);
+        RsData<LikeablePerson> rsData = likeablePersonService.deleteById(rq.getMember(), id);
 
         return rq.redirectWithMsg("/likeablePerson/list", rsData);
     }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -20,7 +21,6 @@ import java.util.Optional;
 public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
-    private final Rq rq;
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
@@ -57,7 +57,7 @@ public class LikeablePersonService {
     }
 
     @Transactional
-    public RsData<LikeablePerson> deleteById(Long likeablePersonId) {
+    public RsData<LikeablePerson> deleteById(Member loginMember, Long likeablePersonId) {
         Optional<LikeablePerson> oLikeablePerson = likeablePersonRepository.findById(likeablePersonId);
 
         if(oLikeablePerson.isEmpty()) {
@@ -65,7 +65,7 @@ public class LikeablePersonService {
         }
 
         // 로그인한 유저의 인스타멤버 ID와 해당 호감 데이터의 인스타멤버 ID가 같은지 확인
-        if(rq.getMember().getInstaMember().getId() != oLikeablePerson.get().getFromInstaMember().getId()) {
+        if(!Objects.equals(loginMember.getInstaMember().getId(), oLikeablePerson.get().getFromInstaMember().getId())) {
             return RsData.of("F-1", "해당 호감 데이터는 당신의 것이 아닙니다.", oLikeablePerson.get());
         }
 
