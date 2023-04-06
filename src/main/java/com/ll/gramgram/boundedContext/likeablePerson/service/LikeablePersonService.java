@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = false)
+@Transactional(readOnly = true)
 public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
@@ -56,6 +56,7 @@ public class LikeablePersonService {
         return likeablePersonRepository.findById(likeablePersonId).orElse(null);
     }
 
+    @Transactional
     public RsData<LikeablePerson> deleteById(Long likeablePersonId) {
         Optional<LikeablePerson> oLikeablePerson = likeablePersonRepository.findById(likeablePersonId);
 
