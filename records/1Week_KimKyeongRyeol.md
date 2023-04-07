@@ -47,7 +47,8 @@
   1. [Google Developers 공식 문서](https://developers.google.com/identity/protocols/oauth2/web-server?hl=ko#authorization-errors-redirect-uri-mismatch) `redirect_uri_mismatch` 파트 참조 &rarr; 승인 요청에 전달된 redirect_uri가 OAuth 클라이언트 ID의 승인된 리디렉션 URI와 일치하지 않는다. 라는 답변을 확인함!
   2. 구글 클라우드 플랫폼 **승인된 리디렉션 URI** 설정을 다시 확인함
   > **해결 방법**<br><br>
-  구글 클라우드 플랫폼에서 기존에는 승인된 리디렉션 URI를 `http://localhost:8080/oauth2/authorization/google` 로 추가를 했었는데, 카카오 로그인 설정에도 `http://localhost:8080/oauth2/authorization/kakao` 라는 URI는 사용하지 않았었다! 그래서 구글 클라우드 설정에서 리디렉션 URI를 `http://localhost:8080/login/oauth2/code/google` 로 고쳐주니 정상 작동됐다.
+  구글 클라우드 플랫폼에서 기존에는 승인된 리디렉션 URI를 `http://localhost:8080/oauth2/authorization/google` 로 추가를 했었는데, 카카오 로그인 설정에도 `http://localhost:8080/oauth2/authorization/kakao` 라는 URI는 사용하지 않았었다! 그래서 구글 클라우드 설정에서 리디렉션 URI를 `http://localhost:8080/login/oauth2/code/google` 로 고쳐주니 정상 작동됐다.<br><br>
+  &rarr; 이유 : <br>`/oauth2/authorization/{registrationId}`는 OAuth 2.0 흐름의 <u>**인증 요청을 시작**</u>하기 위한 엔드포인트이다. 이 주소는 인증 요청의 시작을 위한 주소이기에 승인의 결과를 받을 수 없고,<br><br>`/login/oauth2/code/{registrationId}`는 OAuth 2.0 <u>**인증 코드 승인을 처리**</u>하기 위한 엔드포인트다. 즉, 코드 승인 처리를 하기 위해서 이 주소를 사용해야 한다!
 
 <br>
 

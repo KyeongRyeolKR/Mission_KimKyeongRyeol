@@ -70,7 +70,10 @@ public class LikeablePersonService {
 
         likeablePersonRepository.deleteById(likeablePersonId);
 
-        return RsData.of("S-1", "해당 호감 상대가 삭제되었습니다.");
+        // 삭제된 Username
+        String deletedUsername = oLikeablePerson.get().getToInstaMember().getUsername();
+
+        return RsData.of("S-1", "호감 상대(%s)가 삭제되었습니다.".formatted(deletedUsername));
     }
 
     // member 가 likeablePerson 을 삭제할 권한이 있는지 체크
