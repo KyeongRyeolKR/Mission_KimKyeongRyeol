@@ -23,7 +23,7 @@ import java.util.Map;
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private final MemberService memberService;
 
-    // 카카오톡 로그인이 성공할 때 마다 이 함수가 실행된다.
+    // 소셜 로그인이 성공할 때 마다 이 함수가 실행된다.
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -34,6 +34,15 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String providerTypeCode = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
 
         String username = providerTypeCode + "__%s".formatted(oauthId);
+
+        // 네이버 로그인 시 username이 JSON 형태로 나오므로,
+        // 방법 1) NAVER__(고유아이디값)으로 출력되게 형식 변경
+        // 방법 2) NAVER__(이름)으로 출력되게 형식 변경
+        // 코드가 좋지 않아보여서 리팩토링 필요할듯
+        if(providerTypeCode.equals("NAVER")) {
+//            username = providerTypeCode + "__%s".formatted(oauthId.replace("}", "").substring(4));
+            username = providerTypeCode + "__%s".formatted(oauthId.replaceAll("[^가-힣]+", ""));
+        }
 
         Member member = memberService.whenSocialLogin(providerTypeCode, username).getData();
 

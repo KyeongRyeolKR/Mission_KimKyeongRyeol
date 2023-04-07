@@ -6,7 +6,7 @@
 
 <body>
 
-<mai layout:fragment="main">
+<main layout:fragment="main">
     <th:block th:unless="${@rq.member.hasConnectedInstaMember}">
         <div>먼저 본인의 인스타그램 아이디를 입력해주세요.</div>
 
@@ -84,11 +84,11 @@
                 </div>
             </div>
             <div>
-                <input type="submit" value="추가" class="btn btn-primary">
+                <input type="submit" value="추가" class="btn btn-block btn-primary">
             </div>
         </form>
     </th:block>
-</mai>
+</main>
 </body>
 
 </html>

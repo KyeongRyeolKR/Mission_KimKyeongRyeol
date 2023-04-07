@@ -1,5 +1,6 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
+import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,5 +50,34 @@ public class LikeablePersonService {
 
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
+    }
+
+    public LikeablePerson findById(Long likeablePersonId) {
+        return likeablePersonRepository.findById(likeablePersonId).orElse(null);
+    }
+
+    @Transactional
+    public RsData<LikeablePerson> deleteById(Member loginMember, Long likeablePersonId) {
+        Optional<LikeablePerson> oLikeablePerson = likeablePersonRepository.findById(likeablePersonId);
+
+        if(oLikeablePerson.isEmpty()) {
+            return RsData.of("F-2", "없는 데이터입니다.");
+        }
+
+        if(!canDelete(loginMember, oLikeablePerson.get())) {
+            return RsData.of("F-1", "해당 호감 데이터는 당신의 것이 아닙니다.", oLikeablePerson.get());
+        }
+
+        likeablePersonRepository.deleteById(likeablePersonId);
+
+        // 삭제된 Username
+        String deletedUsername = oLikeablePerson.get().getToInstaMember().getUsername();
+
+        return RsData.of("S-1", "호감 상대(%s)가 삭제되었습니다.".formatted(deletedUsername));
+    }
+
+    // member 가 likeablePerson 을 삭제할 권한이 있는지 체크
+    public boolean canDelete(Member member, LikeablePerson likeablePerson) {
+        return Objects.equals(member.getInstaMember().getId(), likeablePerson.getFromInstaMember().getId());
     }
 }
