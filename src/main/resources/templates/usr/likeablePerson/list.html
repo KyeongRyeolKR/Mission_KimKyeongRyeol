@@ -17,6 +17,9 @@
 
     <th:block th:if="${@rq.member.hasConnectedInstaMember}">
         <ul>
+            <li>
+                <span th:text="|당신은 현재 ${#lists.size(@rq.member.instaMember.fromLikeablePeople)}명을 좋아합니다.|"></span>
+            </li>
             <li th:each="likeablePerson: ${likeablePeople}">
                 <span class="toInstaMember_username" th:text="${likeablePerson.toInstaMember.username}"></span>
                 <span class="toInstaMember_attractiveTypeDisplayName"
