@@ -34,18 +34,15 @@ public class LikeablePersonService {
         InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
 
-        if(!canAdd(fromInstaMember.getFromLikeablePeople())) {
-            return RsData.of("F-4", "호감상대는 10명을 초과할 수 없습니다.");
-        }
-
+        // 내가 호감표시를 한 username이 이미 등록되어 있는지 탐색
         Optional<LikeablePerson> oFound = findByUsername(fromInstaMember.getFromLikeablePeople(), username);
 
+        // 내가 호감표시를 한 username이 이미 존재할 경우
         if(oFound.isPresent()) {
-            if (isDuplicate(oFound.get(), username, attractiveTypeCode)) {
+            // username이 같은데, attractiveTypeCode까지 같을 경우
+            if (isSameTypeCode(oFound.get(), attractiveTypeCode)) {
                 return RsData.of("F-3", "해당 유저는 이미 등록된 상대입니다.");
-            }
-
-            if (canModify(oFound.get(), username, attractiveTypeCode)) {
+            } else {    // username만 같을 경우
                 String beforeType = oFound.get().getAttractiveTypeDisplayName();
 
                 oFound.get().setAttractiveTypeCode(attractiveTypeCode);
@@ -54,6 +51,11 @@ public class LikeablePersonService {
 
                 return RsData.of("S-2", "%s에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, beforeType, afterType));
             }
+        }
+
+        // 이미 호감표시를 10명 했을 때(더이상 등록하지 못할 때)
+        if(!canAdd(fromInstaMember.getFromLikeablePeople())) {
+            return RsData.of("F-4", "호감상대는 10명을 초과할 수 없습니다.");
         }
 
         LikeablePerson likeablePerson = LikeablePerson
@@ -124,14 +126,6 @@ public class LikeablePersonService {
 
     private boolean isSameTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
         return likeablePerson.getAttractiveTypeCode() == attractiveTypeCode;
-    }
-
-    private boolean canModify(LikeablePerson likeablePerson, String username, int attractiveTypeCode) {
-        return isSameUsername(likeablePerson, username) && !isSameTypeCode(likeablePerson, attractiveTypeCode);
-    }
-
-    private boolean isDuplicate(LikeablePerson likeablePerson, String username, int attractiveTypeCode) {
-        return isSameUsername(likeablePerson, username) && isSameTypeCode(likeablePerson, attractiveTypeCode);
     }
 
     private boolean canAdd(List<LikeablePerson> fromLikeablePeople) {
