@@ -4,6 +4,9 @@ import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -33,16 +36,14 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String providerTypeCode = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
 
-        String username = providerTypeCode + "__%s".formatted(oauthId);
-
-        // 네이버 로그인 시 username이 JSON 형태로 나오므로,
-        // 방법 1) NAVER__(고유아이디값)으로 출력되게 형식 변경
-        // 방법 2) NAVER__(이름)으로 출력되게 형식 변경
-        // 코드가 좋지 않아보여서 리팩토링 필요할듯
+        // 네이버 로그인일 경우, oauthId에 고유 ID를 JSON 형식에서 뽑아서 저장
         if(providerTypeCode.equals("NAVER")) {
-//            username = providerTypeCode + "__%s".formatted(oauthId.replace("}", "").substring(4));
-            username = providerTypeCode + "__%s".formatted(oauthId.replaceAll("[^가-힣]+", ""));
+            Map<String, Object> attributes = oAuth2User.getAttributes();
+            Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+            oauthId = (String) response.get("id");
         }
+
+        String username = providerTypeCode + "__%s".formatted(oauthId);
 
         Member member = memberService.whenSocialLogin(providerTypeCode, username).getData();
 
