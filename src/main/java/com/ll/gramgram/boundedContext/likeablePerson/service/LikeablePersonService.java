@@ -79,8 +79,8 @@ public class LikeablePersonService {
         return likeablePersonRepository.findByFromInstaMemberId(fromInstaMemberId);
     }
 
-    public LikeablePerson findById(Long likeablePersonId) {
-        return likeablePersonRepository.findById(likeablePersonId).orElse(null);
+    public Optional<LikeablePerson> findById(Long likeablePersonId) {
+        return likeablePersonRepository.findById(likeablePersonId);
     }
 
     @Transactional
