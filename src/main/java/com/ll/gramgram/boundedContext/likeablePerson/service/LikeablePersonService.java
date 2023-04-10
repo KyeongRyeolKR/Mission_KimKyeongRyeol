@@ -35,6 +35,22 @@ public class LikeablePersonService {
         InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
 
+        for(LikeablePerson likeablePerson : fromInstaMember.getFromLikeablePeople()) {
+            if(isSameUsername(likeablePerson, username) && isSameTypeCode(likeablePerson, attractiveTypeCode)) {
+                return RsData.of("F-3", "해당 유저는 이미 등록된 상대입니다.");
+            }
+
+            if(isSameUsername(likeablePerson, username) && !isSameTypeCode(likeablePerson, attractiveTypeCode)) {
+                String beforeType = likeablePerson.getAttractiveTypeDisplayName();
+
+                likeablePerson.setAttractiveTypeCode(attractiveTypeCode);
+
+                String afterType = likeablePerson.getAttractiveTypeDisplayName();
+
+                return RsData.of("S-2", "%s에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, beforeType, afterType));
+            }
+        }
+
         LikeablePerson likeablePerson = LikeablePerson
                 .builder()
                 .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
@@ -86,5 +102,13 @@ public class LikeablePersonService {
     // member 가 likeablePerson 을 삭제할 권한이 있는지 체크
     public boolean canDelete(Member member, LikeablePerson likeablePerson) {
         return Objects.equals(member.getInstaMember().getId(), likeablePerson.getFromInstaMember().getId());
+    }
+
+    public boolean isSameUsername(LikeablePerson likeablePerson, String username) {
+        return likeablePerson.getToInstaMember().getUsername().equals(username);
+    }
+
+    public boolean isSameTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
+        return likeablePerson.getAttractiveTypeCode() == attractiveTypeCode;
     }
 }
