@@ -51,6 +51,10 @@ public class LikeablePersonService {
             }
         }
 
+        if(fromInstaMember.getFromLikeablePeople().size() >= 10) {
+            return RsData.of("F-4", "호감상대는 10명을 초과할 수 없습니다.");
+        }
+
         LikeablePerson likeablePerson = LikeablePerson
                 .builder()
                 .fromInstaMember(fromInstaMember) // 호감을 표시하는 사람의 인스타 멤버
