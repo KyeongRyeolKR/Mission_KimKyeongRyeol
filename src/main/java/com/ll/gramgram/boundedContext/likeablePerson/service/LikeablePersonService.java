@@ -1,6 +1,5 @@
 package com.ll.gramgram.boundedContext.likeablePerson.service;
 
-import com.ll.gramgram.base.rq.Rq;
 import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
 import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
@@ -35,24 +34,26 @@ public class LikeablePersonService {
         InstaMember fromInstaMember = member.getInstaMember();
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
 
-        for(LikeablePerson likeablePerson : fromInstaMember.getFromLikeablePeople()) {
-            if(isSameUsername(likeablePerson, username) && isSameTypeCode(likeablePerson, attractiveTypeCode)) {
+        if(!canAdd(fromInstaMember.getFromLikeablePeople())) {
+            return RsData.of("F-4", "호감상대는 10명을 초과할 수 없습니다.");
+        }
+
+        Optional<LikeablePerson> oFound = findByUsername(fromInstaMember.getFromLikeablePeople(), username);
+
+        if(oFound.isPresent()) {
+            if (isDuplicate(oFound.get(), username, attractiveTypeCode)) {
                 return RsData.of("F-3", "해당 유저는 이미 등록된 상대입니다.");
             }
 
-            if(isSameUsername(likeablePerson, username) && !isSameTypeCode(likeablePerson, attractiveTypeCode)) {
-                String beforeType = likeablePerson.getAttractiveTypeDisplayName();
+            if (canModify(oFound.get(), username, attractiveTypeCode)) {
+                String beforeType = oFound.get().getAttractiveTypeDisplayName();
 
-                likeablePerson.setAttractiveTypeCode(attractiveTypeCode);
+                oFound.get().setAttractiveTypeCode(attractiveTypeCode);
 
-                String afterType = likeablePerson.getAttractiveTypeDisplayName();
+                String afterType = oFound.get().getAttractiveTypeDisplayName();
 
                 return RsData.of("S-2", "%s에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, beforeType, afterType));
             }
-        }
-
-        if(fromInstaMember.getFromLikeablePeople().size() >= 10) {
-            return RsData.of("F-4", "호감상대는 10명을 초과할 수 없습니다.");
         }
 
         LikeablePerson likeablePerson = LikeablePerson
@@ -73,6 +74,15 @@ public class LikeablePersonService {
         toInstaMember.addToLikeablePerson(likeablePerson);
 
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
+    }
+
+    private Optional<LikeablePerson> findByUsername(List<LikeablePerson> likeablePeople, String username) {
+        for(LikeablePerson likeablePerson : likeablePeople) {
+            if(isSameUsername(likeablePerson, username)) {
+                return Optional.of(likeablePerson);
+            }
+        }
+        return Optional.empty();
     }
 
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
@@ -108,11 +118,23 @@ public class LikeablePersonService {
         return Objects.equals(member.getInstaMember().getId(), likeablePerson.getFromInstaMember().getId());
     }
 
-    public boolean isSameUsername(LikeablePerson likeablePerson, String username) {
+    private boolean isSameUsername(LikeablePerson likeablePerson, String username) {
         return likeablePerson.getToInstaMember().getUsername().equals(username);
     }
 
-    public boolean isSameTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
+    private boolean isSameTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
         return likeablePerson.getAttractiveTypeCode() == attractiveTypeCode;
+    }
+
+    private boolean canModify(LikeablePerson likeablePerson, String username, int attractiveTypeCode) {
+        return isSameUsername(likeablePerson, username) && !isSameTypeCode(likeablePerson, attractiveTypeCode);
+    }
+
+    private boolean isDuplicate(LikeablePerson likeablePerson, String username, int attractiveTypeCode) {
+        return isSameUsername(likeablePerson, username) && isSameTypeCode(likeablePerson, attractiveTypeCode);
+    }
+
+    private boolean canAdd(List<LikeablePerson> fromLikeablePeople) {
+        return fromLikeablePeople.size() < 10;
     }
 }
