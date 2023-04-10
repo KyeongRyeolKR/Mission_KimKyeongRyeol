@@ -45,7 +45,7 @@ public class LikeablePersonService {
             } else {    // username만 같을 경우
                 String beforeType = oFound.get().getAttractiveTypeDisplayName();
 
-                oFound.get().setAttractiveTypeCode(attractiveTypeCode);
+                oFound.get().updateAttractiveTypeCode(attractiveTypeCode);
 
                 String afterType = oFound.get().getAttractiveTypeDisplayName();
 
