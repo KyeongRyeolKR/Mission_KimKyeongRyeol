@@ -37,20 +37,9 @@ public class LikeablePersonService {
         // 내가 호감표시를 한 username이 이미 등록되어 있는지 탐색
         Optional<LikeablePerson> oFound = findByUsername(fromInstaMember.getFromLikeablePeople(), username);
 
-        // 내가 호감표시를 한 username이 이미 존재할 경우
+        // 만약 찾았다면(null이 아니라면), 호감사유를 비교하여 중복인지 수정인지 체크해서 결과(RsData)를 반환함
         if(oFound.isPresent()) {
-            // username이 같은데, attractiveTypeCode까지 같을 경우
-            if (isSameTypeCode(oFound.get(), attractiveTypeCode)) {
-                return RsData.of("F-3", "해당 유저는 이미 등록된 상대입니다.");
-            } else {    // username만 같을 경우
-                String beforeType = oFound.get().getAttractiveTypeDisplayName();
-
-                oFound.get().updateAttractiveTypeCode(attractiveTypeCode);
-
-                String afterType = oFound.get().getAttractiveTypeDisplayName();
-
-                return RsData.of("S-2", "%s에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, beforeType, afterType));
-            }
+            return checkDuplicateOrModifyByTypeCode(oFound.get(), attractiveTypeCode);
         }
 
         // 이미 호감표시를 10명 했을 때(더이상 등록하지 못할 때)
@@ -76,6 +65,23 @@ public class LikeablePersonService {
         toInstaMember.addToLikeablePerson(likeablePerson);
 
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
+    }
+
+    private RsData<LikeablePerson> checkDuplicateOrModifyByTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
+        // username이 같은데, attractiveTypeCode까지 같을 경우
+        if (isSameTypeCode(likeablePerson, attractiveTypeCode)) {
+            return RsData.of("F-3", "해당 유저는 이미 등록된 상대입니다.");
+        } else {    // username만 같을 경우
+            String username = likeablePerson.getToInstaMember().getUsername();
+
+            String beforeType = likeablePerson.getAttractiveTypeDisplayName();
+
+            likeablePerson.updateAttractiveTypeCode(attractiveTypeCode);
+
+            String afterType = likeablePerson.getAttractiveTypeDisplayName();
+
+            return RsData.of("S-2", "%s에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, beforeType, afterType));
+        }
     }
 
     private Optional<LikeablePerson> findByUsername(List<LikeablePerson> likeablePeople, String username) {
