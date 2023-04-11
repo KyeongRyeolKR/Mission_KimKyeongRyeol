@@ -70,6 +70,17 @@
 1. 캡슐화의 원칙을 지키기 위해 `LikeablePerson` 엔티티 클래스에 `updateAttractiveTypeCode()` 메소드 추가
 2. `updateAttractiveTypeCode()` 메소드는 변경하려는 `attractiveTypeCode`에 대해 유효성을 검사하고 올바른 값일 경우에만 값을 변경한다.
 3. 서비스 클래스의 `setAttractiveTypeCode()`를 `updateAttractiveTypeCode()`로 변경했다.
+> **문제**
+> 1. 2차 작업에서 `findByUsername()` 메소드 분리는 했었다. 그러나 호감사유에 대한 로직은 조건문만 메소드화 시켰지 로직 자체를 분리하지 않아서 `like()` 메소드에 총 15줄(주석포함)이 추가되었다.<br>
+> &rarr; `attractiveTypeCode`를 비교하는 로직을 메소드화 시켜야 함
+
+### [5차 작업]
+1. 메소드 분리를 위해 `checkDuplicateOrModifyByTypeCode()` 메소드 생성
+2. 완전 중복이면 실패한 `RsData`를 반환하고, 호감 사유가 다르면 호감 사유 수정을 하고 성공한 `RsData`를 반환한다.
+3. 호감 사유 수정을 했을 때, 수정 내역을 보이기 위해 `username`이 필요했다. 해당 값을 매개변수로 받을 수도 있었지만, 매개변수를 최소한으로 쓰고 싶어서 `username`을 매개변수로 받지 않고, 매개변수로 받았던 `likeablePerson` 객체에서 뽑아 따로 저장했다.
+> **문제**
+> 1. 과연 네이밍은 적절했는가? &rarr; 더 짧게, 더 명확하게?
+> 2. 매개변수들은 적절했는가? &rarr; 매개변수를 늘리더라도 메소드 내 코드를 한줄이라도 줄였어야했나?
 
 ## **2) 예외처리 2번 케이스 추가**
 ### [1차 작업]
