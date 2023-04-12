@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.ll.gramgram.base.appConfig.AppConfig.MAX_LIKE;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -44,7 +46,7 @@ public class LikeablePersonService {
 
         // 이미 호감표시를 10명 했을 때(더이상 등록하지 못할 때)
         if(!canAdd(fromInstaMember.getFromLikeablePeople())) {
-            return RsData.of("F-4", "호감상대는 10명을 초과할 수 없습니다.");
+            return RsData.of("F-4", "호감상대는 %d명을 초과할 수 없습니다.".formatted(MAX_LIKE));
         }
 
         LikeablePerson likeablePerson = LikeablePerson
@@ -135,6 +137,6 @@ public class LikeablePersonService {
     }
 
     private boolean canAdd(List<LikeablePerson> fromLikeablePeople) {
-        return fromLikeablePeople.size() < 10;
+        return fromLikeablePeople.size() < MAX_LIKE;
     }
 }
