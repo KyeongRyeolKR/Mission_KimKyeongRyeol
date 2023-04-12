@@ -37,7 +37,7 @@ public class LikeablePersonService {
         InstaMember toInstaMember = instaMemberService.findByUsernameOrCreate(username).getData();
 
         // 내가 호감표시를 한 username이 이미 등록되어 있는지 탐색
-        Optional<LikeablePerson> oFound = findByUsername(fromInstaMember.getFromLikeablePeople(), username);
+        Optional<LikeablePerson> oFound = findByUsernameInList(fromInstaMember.getFromLikeablePeople(), username);
 
         // 만약 찾았다면(null이 아니라면), 호감사유를 비교하여 실패인지 수정인지 체크해서 결과(RsData)를 반환함
         if(oFound.isPresent()) {
@@ -86,7 +86,7 @@ public class LikeablePersonService {
         }
     }
 
-    private Optional<LikeablePerson> findByUsername(List<LikeablePerson> likeablePeople, String username) {
+    private Optional<LikeablePerson> findByUsernameInList(List<LikeablePerson> likeablePeople, String username) {
         for(LikeablePerson likeablePerson : likeablePeople) {
             if(isSameUsername(likeablePerson, username)) {
                 return Optional.of(likeablePerson);
