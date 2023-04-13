@@ -70,10 +70,8 @@ public class LikeablePersonService {
     }
 
     private RsData<LikeablePerson> checkFailOrModifyByTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
-        // username이 같은데, attractiveTypeCode까지 같을 경우
-        if (isSameTypeCode(likeablePerson, attractiveTypeCode)) {
-            return RsData.of("F-3", "해당 유저는 이미 등록된 상대입니다.");
-        } else {    // username만 같을 경우
+        if (!isSameTypeCode(likeablePerson, attractiveTypeCode)) {
+            // username만 같을 경우
             String username = likeablePerson.getToInstaMember().getUsername();
 
             String beforeType = likeablePerson.getAttractiveTypeDisplayName();
@@ -84,6 +82,8 @@ public class LikeablePersonService {
 
             return RsData.of("S-2", "%s에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, beforeType, afterType));
         }
+        // username이 같은데, attractiveTypeCode까지 같을 경우
+        return RsData.of("F-3", "해당 유저는 이미 등록된 상대입니다.");
     }
 
     private Optional<LikeablePerson> findByUsernameInList(List<LikeablePerson> likeablePeople, String username) {
