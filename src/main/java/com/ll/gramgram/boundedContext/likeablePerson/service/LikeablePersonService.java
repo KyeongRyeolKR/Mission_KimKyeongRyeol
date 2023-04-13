@@ -115,6 +115,11 @@ public class LikeablePersonService {
             return RsData.of("F-1", "해당 호감 데이터는 당신의 것이 아닙니다.", oLikeablePerson.get());
         }
 
+        InstaMember instaMember = oLikeablePerson.get().getFromInstaMember();
+
+        instaMember.removeFromLikeablePerson(oLikeablePerson.get());
+        instaMember.removeToLikeablePerson(oLikeablePerson.get());
+
         likeablePersonRepository.deleteById(likeablePersonId);
 
         // 삭제된 Username
