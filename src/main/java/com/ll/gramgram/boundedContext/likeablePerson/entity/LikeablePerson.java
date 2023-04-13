@@ -1,24 +1,28 @@
 package com.ll.gramgram.boundedContext.likeablePerson.entity;
 
+import com.ll.gramgram.base.baseEntity.BaseEntity;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-@ToString
 @Entity
 @Getter
-public class LikeablePerson {
+@NoArgsConstructor
+@SuperBuilder
+@ToString(callSuper = true)
+public class LikeablePerson extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -44,5 +48,15 @@ public class LikeablePerson {
             case 2 -> "성격";
             default -> "능력";
         };
+    }
+
+    // 캡슐화를 위해 setter 대신 update 메소드 추가
+    public void updateAttractiveTypeCode(int attractiveTypeCode) {
+        // 유효성 검사 수행
+        if (attractiveTypeCode < 1 || attractiveTypeCode > 3) {
+            throw new IllegalArgumentException("호감사유코드는 1부터 3까지의 값을 가져야 합니다.");
+        }
+        // attractiveTypeCode 값 변경
+        this.attractiveTypeCode = attractiveTypeCode;
     }
 }
