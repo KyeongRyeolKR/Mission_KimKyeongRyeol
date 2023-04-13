@@ -4,9 +4,6 @@ import com.ll.gramgram.boundedContext.member.entity.Member;
 import com.ll.gramgram.boundedContext.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -37,7 +34,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String providerTypeCode = userRequest.getClientRegistration().getRegistrationId().toUpperCase();
 
         // 네이버 로그인일 경우, oauthId에 고유 ID를 JSON 형식에서 뽑아서 저장
-        if(providerTypeCode.equals("NAVER")) {
+        if (providerTypeCode.equals("NAVER")) {
             Map<String, Object> attributes = oAuth2User.getAttributes();
             Map<String, Object> response = (Map<String, Object>) attributes.get("response");
             oauthId = (String) response.get("id");

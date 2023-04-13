@@ -25,7 +25,7 @@ public class LikeablePersonService {
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
-        if ( member.hasConnectedInstaMember() == false ) {
+        if (member.hasConnectedInstaMember() == false) {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
 
@@ -40,12 +40,12 @@ public class LikeablePersonService {
         Optional<LikeablePerson> oFound = findByUsernameInList(fromInstaMember.getFromLikeablePeople(), username);
 
         // 만약 찾았다면(null이 아니라면), 호감사유를 비교하여 실패인지 수정인지 체크해서 결과(RsData)를 반환함
-        if(oFound.isPresent()) {
+        if (oFound.isPresent()) {
             return checkFailOrModifyByTypeCode(oFound.get(), attractiveTypeCode);
         }
 
         // 이미 호감표시를 10명 했을 때(더이상 등록하지 못할 때)
-        if(!canAdd(fromInstaMember.getFromLikeablePeople())) {
+        if (!canAdd(fromInstaMember.getFromLikeablePeople())) {
             return RsData.of("F-4", "호감상대는 %d명을 초과할 수 없습니다.".formatted(MAX_LIKE));
         }
 
@@ -87,8 +87,8 @@ public class LikeablePersonService {
     }
 
     private Optional<LikeablePerson> findByUsernameInList(List<LikeablePerson> likeablePeople, String username) {
-        for(LikeablePerson likeablePerson : likeablePeople) {
-            if(isSameUsername(likeablePerson, username)) {
+        for (LikeablePerson likeablePerson : likeablePeople) {
+            if (isSameUsername(likeablePerson, username)) {
                 return Optional.of(likeablePerson);
             }
         }
@@ -107,11 +107,11 @@ public class LikeablePersonService {
     public RsData<LikeablePerson> deleteById(Member loginMember, Long likeablePersonId) {
         Optional<LikeablePerson> oLikeablePerson = likeablePersonRepository.findById(likeablePersonId);
 
-        if(oLikeablePerson.isEmpty()) {
+        if (oLikeablePerson.isEmpty()) {
             return RsData.of("F-2", "없는 데이터입니다.");
         }
 
-        if(!canDelete(loginMember, oLikeablePerson.get())) {
+        if (!canDelete(loginMember, oLikeablePerson.get())) {
             return RsData.of("F-1", "해당 호감 데이터는 당신의 것이 아닙니다.", oLikeablePerson.get());
         }
 
