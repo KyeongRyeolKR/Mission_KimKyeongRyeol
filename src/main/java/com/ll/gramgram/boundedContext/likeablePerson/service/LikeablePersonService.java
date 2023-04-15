@@ -25,7 +25,7 @@ public class LikeablePersonService {
 
     @Transactional
     public RsData<LikeablePerson> like(Member member, String username, int attractiveTypeCode) {
-        if (member.hasConnectedInstaMember() == false) {
+        if (!member.hasConnectedInstaMember()) {
             return RsData.of("F-2", "먼저 본인의 인스타그램 아이디를 입력해야 합니다.");
         }
 
@@ -41,11 +41,11 @@ public class LikeablePersonService {
 
         // 만약 찾았다면(null이 아니라면), 호감사유를 비교하여 실패인지 수정인지 체크해서 결과(RsData)를 반환함
         if (oFound.isPresent()) {
-            return checkFailOrModifyByTypeCode(oFound.get(), attractiveTypeCode);
+            return handleLikeDuplicated(oFound.get(), attractiveTypeCode);
         }
 
         // 이미 호감표시를 10명 했을 때(더이상 등록하지 못할 때)
-        if (!canAdd(fromInstaMember.getFromLikeablePeople())) {
+        if (isFull(fromInstaMember.getFromLikeablePeople())) {
             return RsData.of("F-4", "호감상대는 %d명을 초과할 수 없습니다.".formatted(MAX_LIKE));
         }
 
@@ -69,30 +69,27 @@ public class LikeablePersonService {
         return RsData.of("S-1", "입력하신 인스타유저(%s)를 호감상대로 등록되었습니다.".formatted(username), likeablePerson);
     }
 
-    private RsData<LikeablePerson> checkFailOrModifyByTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
-        if (!isSameTypeCode(likeablePerson, attractiveTypeCode)) {
-            // username만 같을 경우
-            String username = likeablePerson.getToInstaMember().getUsername();
-
-            String beforeType = likeablePerson.getAttractiveTypeDisplayName();
-
-            likeablePerson.updateAttractiveTypeCode(attractiveTypeCode);
-
-            String afterType = likeablePerson.getAttractiveTypeDisplayName();
-
-            return RsData.of("S-2", "%s에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, beforeType, afterType));
+    private RsData<LikeablePerson> handleLikeDuplicated(LikeablePerson likeablePerson, int attractiveTypeCode) {
+        if (isSameTypeCode(likeablePerson, attractiveTypeCode)) {
+            // username이 같은데, attractiveTypeCode까지 같을 경우
+            return RsData.of("F-3", "해당 유저는 이미 등록된 상대입니다.");
         }
-        // username이 같은데, attractiveTypeCode까지 같을 경우
-        return RsData.of("F-3", "해당 유저는 이미 등록된 상대입니다.");
+        // username만 같을 경우
+        String username = likeablePerson.getToInstaMember().getUsername();
+
+        String beforeType = likeablePerson.getAttractiveTypeDisplayName();
+
+        likeablePerson.updateAttractiveTypeCode(attractiveTypeCode);
+
+        String afterType = likeablePerson.getAttractiveTypeDisplayName();
+
+        return RsData.of("S-2", "%s에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, beforeType, afterType));
     }
 
     private Optional<LikeablePerson> findByUsernameInList(List<LikeablePerson> likeablePeople, String username) {
-        for (LikeablePerson likeablePerson : likeablePeople) {
-            if (isSameUsername(likeablePerson, username)) {
-                return Optional.of(likeablePerson);
-            }
-        }
-        return Optional.empty();
+        return likeablePeople.stream()
+                .filter(e -> e.getToInstaMember().getUsername().equals(username))
+                .findAny();
     }
 
     public List<LikeablePerson> findByFromInstaMemberId(Long fromInstaMemberId) {
@@ -133,15 +130,11 @@ public class LikeablePersonService {
         return Objects.equals(member.getInstaMember().getId(), likeablePerson.getFromInstaMember().getId());
     }
 
-    private boolean isSameUsername(LikeablePerson likeablePerson, String username) {
-        return likeablePerson.getToInstaMember().getUsername().equals(username);
-    }
-
     private boolean isSameTypeCode(LikeablePerson likeablePerson, int attractiveTypeCode) {
         return likeablePerson.getAttractiveTypeCode() == attractiveTypeCode;
     }
 
-    private boolean canAdd(List<LikeablePerson> fromLikeablePeople) {
-        return fromLikeablePeople.size() < MAX_LIKE;
+    private boolean isFull(List<LikeablePerson> fromLikeablePeople) {
+        return fromLikeablePeople.size() >= MAX_LIKE;
     }
 }
