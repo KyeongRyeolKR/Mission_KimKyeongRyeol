@@ -40,8 +40,13 @@
     <form th:action method="POST" class="p-10 max-w-sm flex flex-col gap-4"
           onsubmit="ConnectForm__submit(this); return false;">
         <div>
-            <input type="text" name="username" maxlength="30" placeholder="인스타그램 아이디"
-                   class="input input-bordered">
+            <input type="text" name="username" maxlength="30" placeholder="나의 인스타그램 아이디"
+                   class="input input-bordered mb-2" onchange="$(this).keyup();" autocomplete="off"
+                   onkeyup="$(this).next().children(':last-child').text(this.value.trim());" onpaste="setTimeoutZero(() => $(this).keyup());">
+            <a href onclick="$(this).attr('href', $(this).text().replaceAll(' ', ''));" target="_blank" style="display:flex;">
+                <span>https://instagram.com/</span>
+                <span></span>
+            </a>
         </div>
         <div>
             <div class="form-control">
