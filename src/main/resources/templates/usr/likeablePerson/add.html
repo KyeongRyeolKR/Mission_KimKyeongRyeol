@@ -30,8 +30,8 @@
                     return;
                 }
 
-                if (form.username.value.length < 4) {
-                    toastWarning('상대방의 인스타그램 아이디를 4자 이상 입력해주세요.');
+                if (form.username.value.length < 2) {
+                    toastWarning('상대방의 인스타그램 아이디를 2자 이상 입력해주세요.');
                     form.username.focus();
                     return;
                 }
@@ -69,34 +69,41 @@
                        class="input input-bordered mb-2" onchange="$(this).keyup();" autocomplete="off"
                        onkeyup="$(this).next().children(':last-child').text(this.value.trim());"
                        onpaste="setTimeoutZero(() => $(this).keyup());">
-                <a href onclick="$(this).attr('href', $(this).text().replaceAll(' ', ''));" target="_blank"
-                   style="display:flex;">
-                    <span>https://instagram.com/</span>
-                    <span></span>
+                <a href="#" onclick="$(this).attr('href', $(this).text().replaceAll(' ', ''));" target="_blank" class="block mt-3 text-sm break-all underline text-blue-400">
+                    <span>https://instagram.com/</span><span class="text-red-300"></span>
                 </a>
             </div>
-            <div>
-                <div class="form-control">
-                    <label class="label cursor-pointer">
-                        <span class="label-text">외모</span>
-                        <input type="radio" name="attractiveTypeCode" value="1" class="radio focus:bg-red-100">
-                    </label>
-                </div>
-                <div class="form-control">
-                    <label class="label cursor-pointer">
-                        <span class="label-text">성격</span>
-                        <input type="radio" name="attractiveTypeCode" value="2" class="radio focus:bg-red-100">
-                    </label>
-                </div>
-                <div class="form-control">
-                    <label class="label cursor-pointer">
-                        <span class="label-text">능력</span>
-                        <input type="radio" name="attractiveTypeCode" value="3" class="radio focus:bg-red-100">
-                    </label>
-                </div>
+            <div class="flex justify-center gap-4">
+                <label class="flex gap-2 items-center cursor-pointer">
+                    <input class="radio peer" type="radio" name="gender" value="W">
+                    <span class="-order-1 text-gray-400
+                    peer-checked:text-purple-400 peer-checked:font-bold peer-checked:text-xl">
+                        <i class="fa-solid fa-person-rays"></i>
+                        외모
+                    </span>
+                </label>
+
+                <label class="flex gap-2 items-center cursor-pointer">
+                    <input class="radio peer" type="radio" name="gender" value="M">
+                    <span class="-order-1 text-gray-400
+                    peer-checked:text-red-400 peer-checked:font-bold peer-checked:text-xl">
+                        <i class="fa-solid fa-heart"></i>
+                        성격
+                    </span>
+                </label>
+
+                <label class="flex gap-2 items-center cursor-pointer">
+                    <input class="radio peer" type="radio" name="gender" value="M">
+                    <span class="-order-1 text-gray-400
+                    peer-checked:text-yellow-400 peer-checked:font-bold peer-checked:text-xl">
+                        <i class="fa-solid fa-sack-dollar"></i>
+                        능력
+                    </span>
+                </label>
+            </div>
             </div>
             <div>
-                <input type="submit" value="추가" class="btn btn-block btn-primary">
+                <input type="submit" value="호감표시" class="btn btn-block btn-primary">
             </div>
         </form>
     </th:block>
