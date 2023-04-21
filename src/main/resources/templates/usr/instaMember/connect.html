@@ -19,8 +19,8 @@
                 return;
             }
 
-            if (form.username.value.length < 4) {
-                toastWarning('인스타그램 아이디를 4자 이상 입력해주세요.');
+            if (form.username.value.length < 2) {
+                toastWarning('인스타그램 아이디를 2자 이상 입력해주세요.');
                 form.username.focus();
                 return;
             }
@@ -49,25 +49,28 @@
                    class="input input-bordered mb-2" onchange="$(this).keyup();" autocomplete="off"
                    onkeyup="$(this).next().children(':last-child').text(this.value.trim());"
                    onpaste="setTimeoutZero(() => $(this).keyup());">
-            <a href onclick="$(this).attr('href', $(this).text().replaceAll(' ', ''));" target="_blank"
-               style="display:flex;">
-                <span>https://instagram.com/</span>
-                <span></span>
+            <a href="#" onclick="$(this).attr('href', $(this).text().replaceAll(' ', ''));" target="_blank" class="block mt-3 text-sm break-all underline text-blue-400">
+                <span>https://instagram.com/</span><span class="text-red-300"></span>
             </a>
         </div>
-        <div>
-            <div class="form-control">
-                <label class="label cursor-pointer">
-                    <span class="label-text">남자</span>
-                    <input type="radio" name="gender" value="M" class="radio focus:bg-red-100">
-                </label>
-            </div>
-            <div class="form-control">
-                <label class="label cursor-pointer">
-                    <span class="label-text">여자</span>
-                    <input type="radio" name="gender" value="W" class="radio focus:bg-red-100">
-                </label>
-            </div>
+        <div class="flex justify-center gap-4">
+            <label class="flex gap-2 items-center cursor-pointer">
+                <input class="radio peer" type="radio" name="gender" value="W">
+                <span class="-order-1 text-gray-400
+                peer-checked:text-red-400 peer-checked:font-bold peer-checked:text-xl">
+                <i class="fa-solid fa-person-dress"></i>
+                여성
+              </span>
+            </label>
+
+            <label class="flex gap-2 items-center cursor-pointer">
+                <input class="radio peer" type="radio" name="gender" value="M">
+                <span class="-order-1 text-gray-400
+                peer-checked:text-blue-400 peer-checked:font-bold peer-checked:text-xl">
+                <i class="fa-solid fa-person"></i>
+                남성
+              </span>
+            </label>
         </div>
         <div>
             <input type="submit" value="정보입력" class="btn btn-block btn-primary">
