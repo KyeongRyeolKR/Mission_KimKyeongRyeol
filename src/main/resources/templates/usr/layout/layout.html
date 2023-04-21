@@ -94,6 +94,10 @@
             <a class="btn btn-ghost normal-case text-xl">gramgram</a>
         </div>
         <div class="navbar-end">
+            <span th:if="${@rq.login}">
+                <i class="fa-solid fa-user gap-1"></i>
+                <a href="/member/me" th:text="${@rq.member.nickname}"></a>
+            </span>
             <button class="btn btn-ghost btn-circle">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                      stroke="currentColor">

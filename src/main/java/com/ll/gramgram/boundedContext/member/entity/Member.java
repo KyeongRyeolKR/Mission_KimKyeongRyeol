@@ -59,4 +59,8 @@ public class Member extends BaseEntity {
     public boolean hasConnectedInstaMember() {
         return instaMember != null;
     }
+
+    public String getNickname() {
+        return "사용자%d".formatted(getId());
+    }
 }

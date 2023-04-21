@@ -215,7 +215,7 @@ public class MemberControllerTests {
                 .andExpect(handler().methodName("showMe"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string(containsString("""
-                        user1님 환영합니다.
+                        사용자2
                         """.stripIndent().trim())));
     }
 }
