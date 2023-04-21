@@ -46,6 +46,14 @@
     </script>
 
     <form th:action method="POST" class="p-10 flex flex-col gap-4" onsubmit="JoinForm__submit(this); return false;">
+        <div class="stats stats-vertical shadow max-w-2xl">
+
+            <div class="stat">
+                <div class="stat-title text-xl">
+                    <i class="fa-solid fa-user-plus mr-2"></i>회원가입
+                </div>
+            </div>
+        </div>
         <div>
             <input type="text" name="username" maxlength="30" placeholder="아이디" class="input input-bordered">
         </div>

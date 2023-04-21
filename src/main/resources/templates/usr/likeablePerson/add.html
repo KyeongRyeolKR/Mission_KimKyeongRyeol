@@ -56,12 +56,22 @@
 
         <form th:action method="POST" class="p-10 max-w-sm flex flex-col gap-4"
               onsubmit="AddForm__submit(this); return false;">
+            <div class="stats stats-vertical shadow max-w-2xl">
+                <div class="stat">
+                    <div class="stat-title text-xl"><i class="fa-solid fa-heart-circle-plus mr-2"></i>호감표시</div>
+                </div>
+            </div>
             <div>
                 당신의 인스타ID : <span class="badge" th:text="${@rq.member.instaMember.username}"></span>
             </div>
             <div>
-                <input type="text" name="username" autocomplete="off" maxlength="30" placeholder="상대방의 인스타그램 아이디"
-                       class="input input-bordered">
+                <input type="text" name="username" maxlength="30" placeholder="상대방의 인스타그램 아이디"
+                       class="input input-bordered mb-2" onchange="$(this).keyup();" autocomplete="off"
+                       onkeyup="$(this).next().children(':last-child').text(this.value.trim());" onpaste="setTimeoutZero(() => $(this).keyup());">
+                <a href onclick="$(this).attr('href', $(this).text().replaceAll(' ', ''));" target="_blank" style="display:flex;">
+                    <span>https://instagram.com/</span>
+                    <span></span>
+                </a>
             </div>
             <div>
                 <div class="form-control">
