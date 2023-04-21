@@ -67,16 +67,16 @@ public class LikeablePersonControllerTests {
                         <input type="text" name="username"
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <input type="radio" name="attractiveTypeCode" value="1"
+                        <input class="radio peer" type="radio" name="attractiveTypeCode" value="1">
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <input type="radio" name="attractiveTypeCode" value="2"
+                        <input class="radio peer" type="radio" name="attractiveTypeCode" value="2">
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <input type="radio" name="attractiveTypeCode" value="3"
+                        <input class="radio peer" type="radio" name="attractiveTypeCode" value="3">
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <input type="submit" value="추가"
+                        <input type="submit" value="호감표시"
                         """.stripIndent().trim())));
         ;
     }
@@ -138,16 +138,16 @@ public class LikeablePersonControllerTests {
                 .andExpect(handler().methodName("showList"))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().string(containsString("""
-                        <span class="toInstaMember_username">insta_user4</span>
+                        <div>당신을 현재 0명이 좋아합니다.</div>
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <span class="toInstaMember_attractiveTypeDisplayName">외모</span>
+                        <div>당신은 현재 2명을 좋아합니다.</div>
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <span class="toInstaMember_username">insta_user100</span>
+                        <h2 class="text-xl">insta_user100</h2>
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <span class="toInstaMember_attractiveTypeDisplayName">성격</span>
+                        <span class="badge badge-lg">성격</span>
                         """.stripIndent().trim())));
         ;
     }

@@ -54,10 +54,10 @@ public class InstaMemberControllerTests {
                         <input type="text" name="username"
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <input type="radio" name="gender" value="W"
+                        <input class="radio peer" type="radio" name="gender" value="W">
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
-                        <input type="radio" name="gender" value="M"
+                        <input class="radio peer" type="radio" name="gender" value="M">
                         """.stripIndent().trim())))
                 .andExpect(content().string(containsString("""
                         <input type="submit" value="정보입력"
