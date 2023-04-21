@@ -41,29 +41,81 @@
                 return;
             }
 
+            form.passwordConfirm.value = form.passwordConfirm.value.trim();
+
+            if (form.password.value != form.passwordConfirm.value) {
+                toastWarning('비밀번호 확인이 일치하지 않습니다.');
+                form.passwordConfirm.focus();
+                return;
+            }
+
             form.submit(); // 폼 발송
         }
     </script>
 
-    <form th:action method="POST" class="p-10 flex flex-col gap-4" onsubmit="JoinForm__submit(this); return false;">
-        <div class="stats stats-vertical shadow max-w-2xl">
+    <div class="flex flex-col justify-center items-center">
+        <form th:action method="POST" class="p-10 flex flex-col gap-2"
+              onsubmit="JoinForm__submit(this); return false;">
+            <div class="stats stats-vertical shadow max-w-2xl">
 
-            <div class="stat">
-                <div class="stat-title text-xl">
-                    <i class="fa-solid fa-user-plus mr-2"></i>회원가입
+                <div class="stat">
+                    <div class="stat-title text-xl">
+                        <i class="fa-solid fa-user-plus mr-2"></i>회원가입
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">아이디</span>
+                </label>
+                <input type="text" name="username" placeholder="아이디" class="input input-bordered" autofocus/>
+            </div>
+
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">비빌번호</span>
+                </label>
+                <input type="password" name="password" placeholder="비빌번호" class="input input-bordered"/>
+            </div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">비빌번호 확인</span>
+                </label>
+                <input type="password" name="passwordConfirm" placeholder="비빌번호 확인" class="input input-bordered"/>
+            </div>
+            <div>
+                <input type="submit" value="회원가입" class="btn btn-block btn-primary">
+            </div>
+
+            <div class="btn-group btn-group-vertical">
+                <a class="btn btn-outline" style="text-decoration: none" href="/oauth2/authorization/kakao">
+                    <i class="fa-solid fa-comment mr-1" style="color: #ffe812;"></i>카카오 간편가입
+                </a>
+
+                <a class="btn btn-outline" style="text-decoration: none" href="/oauth2/authorization/google">
+                    <i class="fa-brands fa-google mr-1" style="color: #ff4000;"></i>구글 간편가입
+                </a>
+
+                <a class="btn btn-outline" style="text-decoration: none" href="/oauth2/authorization/naver">
+                    <i class="fa-solid fa-n mr-1" style="color: #00ff2a;"></i> 네이버 간편가입
+                </a>
+            </div>
+        </form>
+
         <div>
-            <input type="text" name="username" maxlength="30" placeholder="아이디" class="input input-bordered">
+            <a class="btn btn-link" style="text-decoration: none" href="/member/login">
+                <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i> 로그인
+            </a>
+            |
+            <a class="btn btn-link" style="text-decoration: none" href="#">
+                <i class="fas fa-light fa-id-card mr-1"></i> 아이디찾기
+            </a>
+            |
+            <a class="btn btn-link" style="text-decoration: none" href="#">
+                <i class="fas fa-regular fa-lock mr-1"></i> 비밀번호찾기
+            </a>
         </div>
-        <div>
-            <input type="password" name="password" maxlength="30" placeholder="비밀번호" class="input input-bordered">
-        </div>
-        <div>
-            <input type="submit" value="회원가입" class="btn btn-block btn-primary">
-        </div>
-    </form>
+    </div>
 </main>
 
 </body>
