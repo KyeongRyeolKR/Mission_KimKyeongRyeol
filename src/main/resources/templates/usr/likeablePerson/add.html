@@ -67,8 +67,10 @@
             <div>
                 <input type="text" name="username" maxlength="30" placeholder="상대방의 인스타그램 아이디"
                        class="input input-bordered mb-2" onchange="$(this).keyup();" autocomplete="off"
-                       onkeyup="$(this).next().children(':last-child').text(this.value.trim());" onpaste="setTimeoutZero(() => $(this).keyup());">
-                <a href onclick="$(this).attr('href', $(this).text().replaceAll(' ', ''));" target="_blank" style="display:flex;">
+                       onkeyup="$(this).next().children(':last-child').text(this.value.trim());"
+                       onpaste="setTimeoutZero(() => $(this).keyup());">
+                <a href onclick="$(this).attr('href', $(this).text().replaceAll(' ', ''));" target="_blank"
+                   style="display:flex;">
                     <span>https://instagram.com/</span>
                     <span></span>
                 </a>

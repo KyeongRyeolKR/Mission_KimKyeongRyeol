@@ -32,7 +32,8 @@
                 <li th:each="likeablePerson: ${likeablePeople}">
                     <h2 class="text-xl" th:text="${likeablePerson.toInstaMember.username}"></h2>
                     <span class="badge badge-lg" th:text="${likeablePerson.attractiveTypeDisplayName}"></span>
-                    <a class="badge badge-secondary badge-outline" href="javascript:;" onclick="if (confirm('정말로 삭제하시겠습니까?')) $(this).next().submit();">삭제</a>
+                    <a class="badge badge-secondary badge-outline" href="javascript:;"
+                       onclick="if (confirm('정말로 삭제하시겠습니까?')) $(this).next().submit();">삭제</a>
                     <form hidden th:action="@{|/likeablePerson/${likeablePerson.id}|}" method="POST">
                         <input type="hidden" name="_method" value="delete">
                     </form>
