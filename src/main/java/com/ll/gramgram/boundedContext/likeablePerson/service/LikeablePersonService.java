@@ -51,7 +51,7 @@ public class LikeablePersonService {
                 .build();
 
         // 호감 발생 메세지 생성
-        notificationService.add(likeablePerson);
+        notificationService.like(likeablePerson);
 
         likeablePersonRepository.save(likeablePerson); // 저장
 

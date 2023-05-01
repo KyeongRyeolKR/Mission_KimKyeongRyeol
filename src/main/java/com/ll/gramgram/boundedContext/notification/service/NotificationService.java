@@ -18,7 +18,7 @@ public class NotificationService {
         return notificationRepository.findByToInstaMember(toInstaMember);
     }
 
-    public void add(LikeablePerson likeablePerson) {
+    public void like(LikeablePerson likeablePerson) {
         Notification newNotification = Notification.builder()
                 .toInstaMember(likeablePerson.getToInstaMember())
                 .fromInstaMember(likeablePerson.getFromInstaMember())
