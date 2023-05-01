@@ -1,55 +1,16 @@
 @font-face {
-    font-family: 'GmarketSansMedium';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/GmarketSansMedium.woff') format('woff');
-    font-weight: normal;
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
     font-style: normal;
 }
 
 html > body {
-    font-family: "GmarketSansMedium";
+    font-family: "Pretendard-Regular";
     text-underline-position: under;
     word-break: keep-all;
 }
 
-@import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,700);
-/* #1- Larger numbers */
-ol.large-numbers {
-    counter-reset: li; /* Initiate a counter */
-    margin-left: 0; /* Remove the default left margin */
-    padding-left: 0; /* Remove the default left padding */
-    line-height: 2.5;
-}
-
-ol.large-numbers > li {
-    position: relative; /* Create a positioning context */
-    list-style: none; /* Disable the normal item numbering */
-    margin: 1rem 0 1rem 2rem;
-    padding: 0 0 0 1rem;
-}
-
-ol.large-numbers > li:before {
-    content: counter(li); /* Use the counter as content */
-    counter-increment: li; /* Increment the counter by 1 */
-    /* Position and style the number */
-    position: absolute;
-    top: -0.3em; /* move numbers up or down as needed */
-    left: -0.9em;
-    width: 1em;
-    text-align: center;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    font-size: 2em;
-    font-weight: bold;
-    font-weight: 700;
-    color: #A8CABA;
-    text-shadow: 3px 3px 0 #838689,
-    -1px -1px 0 #838689,
-    1px -1px 0 #838689,
-    -1px 1px 0 #838689,
-    1px 1px 0 #838689;
-}
-
-ol.large-numbers li:hover:before {
-    color: #EBE3AA;
+html > body .label-text {
+    font-size: 1rem;
 }

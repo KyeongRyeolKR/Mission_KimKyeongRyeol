@@ -1,21 +1,18 @@
 package com.ll.gramgram.boundedContext.likeablePerson.entity;
 
+import com.ll.gramgram.base.appConfig.AppConfig;
 import com.ll.gramgram.base.baseEntity.BaseEntity;
+import com.ll.gramgram.base.rsData.RsData;
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
+import com.ll.gramgram.standard.util.Ut;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
@@ -23,13 +20,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @SuperBuilder
 @ToString(callSuper = true)
 public class LikeablePerson extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
-    @CreatedDate
-    private LocalDateTime createDate;
-    @LastModifiedDate
-    private LocalDateTime modifyDate;
+    private LocalDateTime modifyUnlockDate;
 
     @ManyToOne
     @ToString.Exclude
@@ -40,7 +31,28 @@ public class LikeablePerson extends BaseEntity {
     @ToString.Exclude
     private InstaMember toInstaMember; // 호감을 받은 사람(인스타 멤버)
     private String toInstaMemberUsername; // 혹시 몰라서 기록
+
     private int attractiveTypeCode; // 매력포인트(1=외모, 2=성격, 3=능력)
+
+    public boolean isModifyUnlocked() {
+        return modifyUnlockDate.isBefore(LocalDateTime.now());
+    }
+
+    // 초 단위에서 올림 해주세요.
+    public String getModifyUnlockDateRemainStrHuman() {
+        return "2시간 16분";
+    }
+
+    public RsData updateAttractionTypeCode(int attractiveTypeCode) {
+        if (this.attractiveTypeCode == attractiveTypeCode) {
+            return RsData.of("F-1", "이미 설정되었습니다.");
+        }
+
+        this.attractiveTypeCode = attractiveTypeCode;
+        this.modifyUnlockDate = AppConfig.genLikeablePersonModifyUnlockDate();
+
+        return RsData.of("S-1", "성공");
+    }
 
     public String getAttractiveTypeDisplayName() {
         return switch (attractiveTypeCode) {
@@ -50,13 +62,15 @@ public class LikeablePerson extends BaseEntity {
         };
     }
 
-    // 캡슐화를 위해 setter 대신 update 메소드 추가
-    public void updateAttractiveTypeCode(int attractiveTypeCode) {
-        // 유효성 검사 수행
-        if (attractiveTypeCode < 1 || attractiveTypeCode > 3) {
-            throw new IllegalArgumentException("호감사유코드는 1부터 3까지의 값을 가져야 합니다.");
-        }
-        // attractiveTypeCode 값 변경
-        this.attractiveTypeCode = attractiveTypeCode;
+    public String getAttractiveTypeDisplayNameWithIcon() {
+        return switch (attractiveTypeCode) {
+            case 1 -> "<i class=\"fa-solid fa-person-rays\"></i>";
+            case 2 -> "<i class=\"fa-regular fa-face-smile\"></i>";
+            default -> "<i class=\"fa-solid fa-people-roof\"></i>";
+        } + "&nbsp;" + getAttractiveTypeDisplayName();
+    }
+
+    public String getJdenticon() {
+        return Ut.hash.sha256(fromInstaMember.getId() + "_likes_" + toInstaMember.getId());
     }
 }

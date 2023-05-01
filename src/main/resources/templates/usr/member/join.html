@@ -6,14 +6,14 @@
 
 <body>
 
-<main layout:fragment="main">
+<main layout:fragment="main" class="flex-grow flex items-center justify-center">
     <script>
         function JoinForm__submit(form) {
             // username 이(가) 올바른지 체크
 
             form.username.value = form.username.value.trim(); // 입력란의 입력값에 있을지 모르는 좌우공백제거
 
-            if (form.username.value.length == 0) {
+            if (form.username.value.length === 0) {
                 toastWarning('아이디를 입력해주세요.');
                 form.username.focus();
                 return;
@@ -29,7 +29,7 @@
 
             form.password.value = form.password.value.trim(); // 입력란의 입력값에 있을지 모르는 좌우공백제거
 
-            if (form.password.value.length == 0) {
+            if (form.password.value.length === 0) {
                 form.password.focus();
                 toastWarning('비밀번호를 입력해주세요.');
                 return;
@@ -53,68 +53,62 @@
         }
     </script>
 
-    <div class="flex flex-col justify-center items-center">
-        <form th:action method="POST" class="p-10 flex flex-col gap-2"
-              onsubmit="JoinForm__submit(this); return false;">
-            <div class="stats stats-vertical shadow max-w-2xl">
+    <div class="max-w-2xl w-full px-4">
+        <h1 class="mb-4">
+            <i class="fa-solid fa-user-plus"></i>
+            회원가입
+        </h1>
 
-                <div class="stat">
-                    <div class="stat-title text-xl">
-                        <i class="fa-solid fa-user-plus mr-2"></i>회원가입
-                    </div>
+        <form th:action method="POST" class="flex flex-col gap-6" onsubmit="JoinForm__submit(this); return false;">
+            <th:block th:if="false">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">아이디</span>
+                    </label>
+                    <input type="text" name="username" placeholder="아이디" class="input input-bordered" autofocus/>
                 </div>
-            </div>
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">아이디</span>
-                </label>
-                <input type="text" name="username" placeholder="아이디" class="input input-bordered" autofocus/>
-            </div>
 
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">비빌번호</span>
-                </label>
-                <input type="password" name="password" placeholder="비빌번호" class="input input-bordered"/>
-            </div>
-            <div class="form-control">
-                <label class="label">
-                    <span class="label-text">비빌번호 확인</span>
-                </label>
-                <input type="password" name="passwordConfirm" placeholder="비빌번호 확인" class="input input-bordered"/>
-            </div>
-            <div>
-                <input type="submit" value="회원가입" class="btn btn-block btn-primary">
-            </div>
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">비빌번호</span>
+                    </label>
+                    <input type="password" name="password" placeholder="비빌번호" class="input input-bordered"/>
+                </div>
 
-            <div class="btn-group btn-group-vertical">
-                <a class="btn btn-outline" style="text-decoration: none" href="/oauth2/authorization/kakao">
-                    <i class="fa-solid fa-comment mr-1" style="color: #ffe812;"></i>카카오 간편가입
-                </a>
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">비빌번호 확인</span>
+                    </label>
+                    <input type="password" name="passwordConfirm" placeholder="비빌번호 확인" class="input input-bordered"/>
+                </div>
 
-                <a class="btn btn-outline" style="text-decoration: none" href="/oauth2/authorization/google">
-                    <i class="fa-brands fa-google mr-1" style="color: #ff4000;"></i>구글 간편가입
-                </a>
+                <button id="btn-join-1" class="btn btn-block btn-primary gap-1">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>회원가입</span>
+                </button>
+            </th:block>
 
-                <a class="btn btn-outline" style="text-decoration: none" href="/oauth2/authorization/naver">
-                    <i class="fa-solid fa-n mr-1" style="color: #00ff2a;"></i> 네이버 간편가입
-                </a>
+            <a href="/oauth2/authorization/kakao" class="btn btn-block btn-outline gap-1">
+                <i class="fa-solid fa-comment text-[color:#ffe812]"></i>
+                <span>카카오 로그인</span>
+            </a>
+
+            <a href="/oauth2/authorization/naver" class="btn btn-block btn-outline gap-1">
+                <i class="fa-solid fa-n text-[color:#2DB400]"></i>
+                <span>네이버 로그인</span>
+            </a>
+
+            <a href="/oauth2/authorization/google" class="btn btn-block btn-outline gap-1">
+                <i class="fa-brands fa-google text-[color:#ff4000]"></i>
+                <span>구글 로그인</span>
+            </a>
+
+            <div class="flex flex-wrap justify-center">
+                <a href="/usr/member/login" class="btn btn-link">로그인</a>
+                <a href="#" class="btn btn-link">아이디찾기</a>
+                <a href="#" class="btn btn-link">비밀번호찾기</a>
             </div>
         </form>
-
-        <div>
-            <a class="btn btn-link" style="text-decoration: none" href="/member/login">
-                <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i> 로그인
-            </a>
-            |
-            <a class="btn btn-link" style="text-decoration: none" href="#">
-                <i class="fas fa-light fa-id-card mr-1"></i> 아이디찾기
-            </a>
-            |
-            <a class="btn btn-link" style="text-decoration: none" href="#">
-                <i class="fas fa-regular fa-lock mr-1"></i> 비밀번호찾기
-            </a>
-        </div>
     </div>
 </main>
 
