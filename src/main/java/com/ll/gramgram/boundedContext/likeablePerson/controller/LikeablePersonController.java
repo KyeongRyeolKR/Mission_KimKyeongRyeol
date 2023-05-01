@@ -74,6 +74,8 @@ public class LikeablePersonController {
     public String cancel(@PathVariable Long id) {
         LikeablePerson likeablePerson = likeablePersonService.findById(id).orElse(null);
 
+        if(!likeablePerson.isModifyUnlocked()) return rq.historyBack("%s 후에 취소 할 수 있습니다.".formatted(likeablePerson.getModifyUnlockDateRemainStrHuman()));
+
         RsData canDeleteRsData = likeablePersonService.canCancel(rq.getMember(), likeablePerson);
 
         if (canDeleteRsData.isFail()) return rq.historyBack(canDeleteRsData);
@@ -89,6 +91,8 @@ public class LikeablePersonController {
     @GetMapping("/modify/{id}")
     public String showModify(@PathVariable Long id, Model model) {
         LikeablePerson likeablePerson = likeablePersonService.findById(id).orElseThrow();
+
+        if(!likeablePerson.isModifyUnlocked()) return rq.historyBack("%s 후에 변경 할 수 있습니다.".formatted(likeablePerson.getModifyUnlockDateRemainStrHuman()));
 
         RsData canModifyRsData = likeablePersonService.canModifyLike(rq.getMember(), likeablePerson);
 
