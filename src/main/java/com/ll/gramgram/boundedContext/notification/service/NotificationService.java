@@ -1,6 +1,7 @@
 package com.ll.gramgram.boundedContext.notification.service;
 
 import com.ll.gramgram.boundedContext.instaMember.entity.InstaMember;
+import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.notification.entity.Notification;
 import com.ll.gramgram.boundedContext.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,5 +16,16 @@ public class NotificationService {
 
     public List<Notification> findByToInstaMember(InstaMember toInstaMember) {
         return notificationRepository.findByToInstaMember(toInstaMember);
+    }
+
+    public void add(LikeablePerson likeablePerson) {
+        Notification newNotification = Notification.builder()
+                .toInstaMember(likeablePerson.getToInstaMember())
+                .fromInstaMember(likeablePerson.getFromInstaMember())
+                .oldAttractiveTypeCode(likeablePerson.getAttractiveTypeCode())
+                .typeCode("Like")
+                .build();
+
+        notificationRepository.save(newNotification);
     }
 }

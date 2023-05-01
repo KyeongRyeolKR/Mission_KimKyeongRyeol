@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,4 +30,38 @@ public class Notification extends BaseEntity {
     private int oldAttractiveTypeCode; // 해당사항 없으면 0
     private String newGender; // 해당사항 없으면 null
     private int newAttractiveTypeCode; // 해당사항 없으면 0
+
+    public String getTimesAgo() {
+        Duration duration = Duration.between(getModifyDate(), LocalDateTime.now());
+        long seconds = duration.toSeconds();
+        long minutes = duration.toMinutes();
+        long hours = duration.toHours();
+        long days = duration.toDays();
+
+        if(seconds < 60) {
+            return "%d초 전".formatted(seconds);
+        } else if(minutes < 60) {
+            return "%d분 전".formatted(minutes);
+        } else if(hours < 24){
+            return "%d시간 전".formatted(hours);
+        } else {
+            return "%d일 전".formatted(days);
+        }
+    }
+
+    public String getOldAttractiveTypeDisplayName() {
+        return switch (oldAttractiveTypeCode) {
+            case 1 -> "외모";
+            case 2 -> "성격";
+            default -> "능력";
+        };
+    }
+
+    public String getNewAttractiveTypeDisplayName() {
+        return switch (newAttractiveTypeCode) {
+            case 1 -> "외모";
+            case 2 -> "성격";
+            default -> "능력";
+        };
+    }
 }
