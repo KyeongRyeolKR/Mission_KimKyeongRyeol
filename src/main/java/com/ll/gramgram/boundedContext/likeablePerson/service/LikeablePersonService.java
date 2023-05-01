@@ -167,12 +167,15 @@ public class LikeablePersonService {
             return canModifyRsData;
         }
 
+        int oldAttractiveTypeCode = likeablePerson.getAttractiveTypeCode();
         String oldAttractiveTypeDisplayName = likeablePerson.getAttractiveTypeDisplayName();
         String username = likeablePerson.getToInstaMember().getUsername();
 
         modifyAttractionTypeCode(likeablePerson, attractiveTypeCode);
 
         String newAttractiveTypeDisplayName = likeablePerson.getAttractiveTypeDisplayName();
+
+        notificationService.modify(likeablePerson, oldAttractiveTypeCode);
 
         return RsData.of("S-3", "%s님에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, oldAttractiveTypeDisplayName, newAttractiveTypeDisplayName), likeablePerson);
     }

@@ -52,7 +52,7 @@
                                 알림
                             </div>
                             <div>
-                                <span class="badge badge-primary">23.04.27 12:12, 1시간 전</span>
+                                <span class="badge badge-primary" th:text="|${#temporals.format(notification.modifyDate, 'yy.MM.dd HH:mm')}, ${notification.timesAgo}|"></span>
                             </div>
                         </div>
                         <div class="mt-4 flex flex-col gap-2">
@@ -61,8 +61,8 @@
                                 내용
                             </div>
                             <div>
-                                어떤 <span class="badge badge-primary">여자</span>가 당신에 대한 호감사유를 <span
-                                    class="badge badge-primary">외모</span>에서 <span class="badge badge-primary">성격</span>으로
+                                어떤 <span class="badge badge-primary" th:text="${notification.fromInstaMember.genderDisplayName}"></span>이 당신에 대한 호감사유를 <span
+                                    class="badge badge-primary" th:text="${notification.oldAttractiveTypeDisplayName}"></span>에서 <span class="badge badge-primary" th:text="${notification.newAttractiveTypeDisplayName}"></span>으로
                                 변경했습니다.
                             </div>
                         </div>

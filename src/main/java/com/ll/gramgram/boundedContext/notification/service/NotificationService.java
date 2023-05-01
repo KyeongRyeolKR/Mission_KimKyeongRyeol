@@ -28,4 +28,16 @@ public class NotificationService {
 
         notificationRepository.save(newNotification);
     }
+
+    public void modify(LikeablePerson likeablePerson, int oldAttractiveTypeCode) {
+        Notification newNotification = Notification.builder()
+                .toInstaMember(likeablePerson.getToInstaMember())
+                .fromInstaMember(likeablePerson.getFromInstaMember())
+                .oldAttractiveTypeCode(oldAttractiveTypeCode)
+                .newAttractiveTypeCode(likeablePerson.getAttractiveTypeCode())
+                .typeCode("ModifyAttractiveType")
+                .build();
+
+        notificationRepository.save(newNotification);
+    }
 }
