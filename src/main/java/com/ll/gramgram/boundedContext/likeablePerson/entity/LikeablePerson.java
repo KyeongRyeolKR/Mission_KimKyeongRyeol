@@ -41,7 +41,7 @@ public class LikeablePerson extends BaseEntity {
     }
 
     // 초 단위에서 올림 해주세요.
-    public String getModifyUnlockDateRemainStrHuman() {
+    public String getFormattedRemainTimeForModify() {
         LocalDateTime now = LocalDateTime.now();
         long remainSeconds = AppConfig.getLikeablePersonModifyCoolTime() - ChronoUnit.SECONDS.between(getModifyDate(), now);
 
