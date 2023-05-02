@@ -31,6 +31,7 @@ public class Notification extends BaseEntity {
     private String newGender; // 해당사항 없으면 null
     private int newAttractiveTypeCode; // 해당사항 없으면 0
 
+    // 해당 알림 생성 시간을 "n초 전/n분 전/n시간 전/n일 전" 형식으로 변환해주는 메소드
     public String getTimesAgo() {
         Duration duration = Duration.between(getModifyDate(), LocalDateTime.now());
         long seconds = duration.toSeconds();
@@ -49,6 +50,7 @@ public class Notification extends BaseEntity {
         }
     }
 
+    // 기존 호감 사유 코드를 한글 형식으로 변환해주는 메소드
     public String getOldAttractiveTypeDisplayName() {
         return switch (oldAttractiveTypeCode) {
             case 1 -> "외모";
@@ -57,6 +59,7 @@ public class Notification extends BaseEntity {
         };
     }
 
+    // 새 호감 사유 코드를 한글 형식으로 변환해주는 메소드
     public String getNewAttractiveTypeDisplayName() {
         return switch (newAttractiveTypeCode) {
             case 1 -> "외모";

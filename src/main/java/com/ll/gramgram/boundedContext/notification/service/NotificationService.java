@@ -18,6 +18,7 @@ public class NotificationService {
         return notificationRepository.findByToInstaMember(toInstaMember);
     }
 
+    // 호감 생성 알림 발생 메소드
     public void like(LikeablePerson likeablePerson) {
         Notification newNotification = Notification.builder()
                 .toInstaMember(likeablePerson.getToInstaMember())
@@ -29,6 +30,7 @@ public class NotificationService {
         notificationRepository.save(newNotification);
     }
 
+    // 호감 사유 수정 알림 발생 메소드
     public void modify(LikeablePerson likeablePerson, int oldAttractiveTypeCode) {
         Notification newNotification = Notification.builder()
                 .toInstaMember(likeablePerson.getToInstaMember())

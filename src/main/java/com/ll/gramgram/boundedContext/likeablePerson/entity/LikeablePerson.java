@@ -40,7 +40,7 @@ public class LikeablePerson extends BaseEntity {
         return !modifyUnlockDate.isBefore(LocalDateTime.now());
     }
 
-    // 초 단위에서 올림 해주세요.
+    // 수정, 삭제가 가능하기까지의 남은 시간(쿨타임)을 "n시간 n분 n초" 형식으로 반환하는 메소드
     public String getFormattedRemainTimeForModify() {
         LocalDateTime now = LocalDateTime.now();
         long remainSeconds = AppConfig.getLikeablePersonModifyCoolTime() - ChronoUnit.SECONDS.between(getModifyDate(), now);
