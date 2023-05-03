@@ -9,15 +9,15 @@ spring:
       client:
         registration:
           naver:
-            redirect-uri: 'https://www.서비스.한국/{action}/oauth2/code/{registrationId}'
+            redirect-uri: 'https://www.xn--9w3b15cw7a.xn--3e0b707e/{action}/oauth2/code/{registrationId}'
           kakao:
             redirect-uri: 'https://www.서비스.한국/{action}/oauth2/code/{registrationId}'
           google:
-            redirect-uri: 'https://www.서비스.한국/{action}/oauth2/code/{registrationId}'
+            redirect-uri: 'https://www.xn--9w3b15cw7a.xn--3e0b707e/{action}/oauth2/code/{registrationId}'
           facebook:
-            redirect-uri: 'https://www.서비스.한국/{action}/oauth2/code/{registrationId}'
+            redirect-uri: 'https://www.xn--9w3b15cw7a.xn--3e0b707e/{action}/oauth2/code/{registrationId}'
           instagram:
-            redirect-uri: 'https://www.서비스.한국/{action}/oauth2/code/{registrationId}'
+            redirect-uri: 'https://www.xn--9w3b15cw7a.xn--3e0b707e/{action}/oauth2/code/{registrationId}'
   jpa:
     hibernate:
       ddl-auto: update
