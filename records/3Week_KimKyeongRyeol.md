@@ -60,3 +60,19 @@
 1. 먼저 `notificationService`에 `modify()` 메소드를 구현한다.<br>
 &rarr; `modify(LikeablePerson, int)`  : `builder`를 통해, 매개변수로 받은 `LikeablePerson` 객체 정보와 기존 호감 사유 코드로 새 알림 객체를 생성하고 저장한다.
 2. 최종적으로 `LikeablePersonService`의 `modifyAttractive()` 메소드 안에 만들어둔 `modify()` 메소드를 넣어준다.
+
+### [3차 작업] : 사용자가 알림을 읽으면 readDate 최신화
+
+1. 기본적으로 알림 객체가 생성될 때, `builder`로 `readDate`를 지정하지 않아서 항상 `null` 값이 들어간 상태로 객체가 생성된다.
+2. 즉, 사용자가 알림을 읽었을 때, 최신화만 해주면 된다!
+3. 처음엔 `toBuilder`를 사용해서 객체를 새로 만들어서 저장할까 했는데, 별로 효율적이지 못하다 생각이 들어서 단순히 `Notification` 엔티티에 현재 시간으로 업데이트 해주는 `updateReadDate()` 메소드를 추가해줬다.
+4. 그리고 `NotificationService`에 `readAll(InstaMember)` 메소드를 정의해서 매개변수로 주어진 인스타 유저가 가지고 있는 모든 알림들을 `updateReadDate()`를 사용해 최신화 해줬다.
+5. 마지막으로 사용자가 알림을 읽는다는 건, `usr/notification/list`에 접속한다는 것이니 `NotificationController` 안에 있는 `showList()` 메소드 안에 단순히 만들어둔 `readAll()`을 호출해줬다.
+
+### [4차 작업] : 추가 기능 구현 &rarr; 사용자가 읽지 않은 알림이 있을 경우, 상단 내비바 `알림`에 ● 표시하기 / 모두 읽었거나 알림이 없으면 표시하지 않기
+
+1. 이 기능을 추가하게 된 이유는 `readDate`는 최신화하게 만들었지만, 아무런 표면적 변화가 없어서 와닿지 않아서 만들었다.
+2. 어떤 페이지를 가더라도 상단 내비바는 존재하기에 `Rq` 클래스를 이용하는게 좋다고 판단했다.
+3. 따라서 `Rq` 클래스에 `NotificationService`를 추가하고, `hasNewNotifications()` 메소드를 정의했다.
+4. `hasNewNotifications()` 메소드는 사용자의 인스타 아이디와 연결되어있는 모든 알림들을 조회해, 각 알림들의 `readDate`를 체크하여 하나라도 `null`이 존재한다면 `true`를 반환하고 하나도 없으면 `false`를 반환한다.
+5. 이를 이용해 공통 레이아웃 파일인 `layout.html`에 상단 내비바의 알림 ● 표시를 담당하고 있던 `<span>`의 기존 조건은 `${@rq.login}` 였지만, `${@rq.login} and ${@rq.hasNewNotifications()}`로 변경하여 구현을 끝냈다.
