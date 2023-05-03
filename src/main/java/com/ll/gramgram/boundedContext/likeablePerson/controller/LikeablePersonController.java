@@ -74,12 +74,12 @@ public class LikeablePersonController {
     public String cancel(@PathVariable Long id) {
         LikeablePerson likeablePerson = likeablePersonService.findById(id).orElse(null);
 
-        // 수정이 잠겨 있으면(쿨타임이면) %s(남은 시간) 출력
-        if(likeablePerson.isModifyLocked()) return rq.historyBack("%s 후에 취소 할 수 있습니다.".formatted(likeablePerson.getFormattedRemainTimeForModify()));
-
         RsData canDeleteRsData = likeablePersonService.canCancel(rq.getMember(), likeablePerson);
 
         if (canDeleteRsData.isFail()) return rq.historyBack(canDeleteRsData);
+
+        // 수정이 잠겨 있으면(쿨타임이면) %s(남은 시간) 출력
+        if(likeablePerson.isModifyLocked()) return rq.historyBack("%s 후에 취소 할 수 있습니다.".formatted(likeablePerson.getFormattedRemainTimeForModify()));
 
         RsData deleteRsData = likeablePersonService.cancel(likeablePerson);
 
