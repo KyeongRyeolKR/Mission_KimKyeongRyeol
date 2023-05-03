@@ -42,4 +42,13 @@ public class NotificationService {
 
         notificationRepository.save(newNotification);
     }
+
+    // 해당 인스타 유저의 모든 알림들을 찾아 읽은 시간을 최신화한다.
+    public void readAll(InstaMember instaMember) {
+        List<Notification> notifications = findByToInstaMember(instaMember);
+        for (Notification notification : notifications) {
+            notification.updateReadDate();
+        }
+        notificationRepository.saveAll(notifications);
+    }
 }

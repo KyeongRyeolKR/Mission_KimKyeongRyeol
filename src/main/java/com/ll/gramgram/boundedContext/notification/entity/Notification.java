@@ -67,4 +67,9 @@ public class Notification extends BaseEntity {
             default -> "능력";
         };
     }
+
+    // 읽은 시간을 최신화 해주는 메소드
+    public void updateReadDate() {
+        this.readDate = LocalDateTime.now();
+    }
 }
