@@ -15,7 +15,7 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
 
     public List<Notification> findByToInstaMember(InstaMember toInstaMember) {
-        return notificationRepository.findByToInstaMember(toInstaMember);
+        return notificationRepository.findByToInstaMemberOrderByIdDesc(toInstaMember);
     }
 
     // 호감 생성 알림 발생 메소드
