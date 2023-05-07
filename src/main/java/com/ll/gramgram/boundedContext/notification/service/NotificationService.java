@@ -47,7 +47,9 @@ public class NotificationService {
     public void readAll(InstaMember instaMember) {
         List<Notification> notifications = findByToInstaMember(instaMember);
         for (Notification notification : notifications) {
-            notification.updateReadDate();
+            if(notification.getReadDate() == null) {
+                notification.updateReadDate();
+            }
         }
         notificationRepository.saveAll(notifications);
     }
