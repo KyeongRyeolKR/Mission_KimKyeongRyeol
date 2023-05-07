@@ -26,6 +26,9 @@ public class NotificationController {
             return rq.redirectWithMsg("/usr/instaMember/connect", "먼저 본인의 인스타그램 아이디를 입력해주세요.");
         }
 
+        // 알림 페이지에 들어오면 사용자가 가지고 있는 모든 알림들을 읽음 처리한다.
+        notificationService.readAll(rq.getMember().getInstaMember());
+
         List<Notification> notifications = notificationService.findByToInstaMember(rq.getMember().getInstaMember());
 
         model.addAttribute("notifications", notifications);

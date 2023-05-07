@@ -10,6 +10,7 @@ import com.ll.gramgram.boundedContext.instaMember.service.InstaMemberService;
 import com.ll.gramgram.boundedContext.likeablePerson.entity.LikeablePerson;
 import com.ll.gramgram.boundedContext.likeablePerson.repository.LikeablePersonRepository;
 import com.ll.gramgram.boundedContext.member.entity.Member;
+import com.ll.gramgram.boundedContext.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class LikeablePersonService {
     private final LikeablePersonRepository likeablePersonRepository;
     private final InstaMemberService instaMemberService;
     private final ApplicationEventPublisher publisher;
+    private final NotificationService notificationService;
 
     @Transactional
     public RsData<LikeablePerson> like(Member actor, String username, int attractiveTypeCode) {
@@ -47,6 +49,9 @@ public class LikeablePersonService {
                 .attractiveTypeCode(attractiveTypeCode) // 1=외모, 2=능력, 3=성격
                 .modifyUnlockDate(AppConfig.genLikeablePersonModifyUnlockDate())
                 .build();
+
+        // 호감 발생 알림 생성
+        notificationService.like(likeablePerson);
 
         likeablePersonRepository.save(likeablePerson); // 저장
 
@@ -162,12 +167,16 @@ public class LikeablePersonService {
             return canModifyRsData;
         }
 
+        int oldAttractiveTypeCode = likeablePerson.getAttractiveTypeCode(); // 호감사유 수정 알림을 위해 기존의 사유 코드를 저장
         String oldAttractiveTypeDisplayName = likeablePerson.getAttractiveTypeDisplayName();
         String username = likeablePerson.getToInstaMember().getUsername();
 
         modifyAttractionTypeCode(likeablePerson, attractiveTypeCode);
 
         String newAttractiveTypeDisplayName = likeablePerson.getAttractiveTypeDisplayName();
+
+        // 호감사유 수정 알림 생성
+        notificationService.modify(likeablePerson, oldAttractiveTypeCode);
 
         return RsData.of("S-3", "%s님에 대한 호감사유를 %s에서 %s(으)로 변경합니다.".formatted(username, oldAttractiveTypeDisplayName, newAttractiveTypeDisplayName), likeablePerson);
     }
