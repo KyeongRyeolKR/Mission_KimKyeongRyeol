@@ -12,9 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -36,22 +34,13 @@ public class LikeablePerson extends BaseEntity {
 
     private int attractiveTypeCode; // 매력포인트(1=외모, 2=성격, 3=능력)
 
-    public boolean isModifyLocked() {
-        return !modifyUnlockDate.isBefore(LocalDateTime.now());
+    public boolean isModifyUnlocked() {
+        return modifyUnlockDate.isBefore(LocalDateTime.now());
     }
 
-    // 수정, 삭제가 가능하기까지의 남은 시간(쿨타임)을 "n시간 n분 n초" 형식으로 반환하는 메소드
-    public String getFormattedRemainTimeForModify() {
-        LocalDateTime now = LocalDateTime.now();
-        long remainSeconds = AppConfig.getLikeablePersonModifyCoolTime() - ChronoUnit.SECONDS.between(getModifyDate(), now);
-
-        Duration duration = Duration.ofSeconds(remainSeconds);
-
-        long hours = duration.toHours();    // 남은 시간
-        long minutes = duration.toMinutes() % 60;   // 남은 분
-        long seconds = duration.toSeconds() % 60;   // 남은 초
-
-        return "%d시간 %d분 %d초".formatted(hours, minutes, seconds);
+    // 초 단위에서 올림 해주세요.
+    public String getModifyUnlockDateRemainStrHuman() {
+        return Ut.time.diffFormat1Human(LocalDateTime.now(), modifyUnlockDate);
     }
 
     public RsData updateAttractionTypeCode(int attractiveTypeCode) {

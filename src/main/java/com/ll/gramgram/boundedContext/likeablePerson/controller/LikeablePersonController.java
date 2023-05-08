@@ -78,9 +78,6 @@ public class LikeablePersonController {
 
         if (canDeleteRsData.isFail()) return rq.historyBack(canDeleteRsData);
 
-        // 수정이 잠겨 있으면(쿨타임이면) %s(남은 시간) 출력
-        if(likeablePerson.isModifyLocked()) return rq.historyBack("%s 후에 취소 할 수 있습니다.".formatted(likeablePerson.getFormattedRemainTimeForModify()));
-
         RsData deleteRsData = likeablePersonService.cancel(likeablePerson);
 
         if (deleteRsData.isFail()) return rq.historyBack(deleteRsData);
@@ -93,10 +90,7 @@ public class LikeablePersonController {
     public String showModify(@PathVariable Long id, Model model) {
         LikeablePerson likeablePerson = likeablePersonService.findById(id).orElseThrow();
 
-        // 수정이 잠겨 있으면(쿨타임이면) %s(남은 시간) 출력
-        if(likeablePerson.isModifyLocked()) return rq.historyBack("%s 후에 변경 할 수 있습니다.".formatted(likeablePerson.getFormattedRemainTimeForModify()));
-
-        RsData canModifyRsData = likeablePersonService.canModifyLike(rq.getMember(), likeablePerson);
+        RsData canModifyRsData = likeablePersonService.canModify(rq.getMember(), likeablePerson);
 
         if (canModifyRsData.isFail()) return rq.historyBack(canModifyRsData);
 
@@ -128,9 +122,16 @@ public class LikeablePersonController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/toList")
-    @ResponseBody
     public String showToList(Model model) {
-        //TODO : showToList 구현해야 함
-        return "usr/likeablePerson/toList 구현해야 함";
+        InstaMember instaMember = rq.getMember().getInstaMember();
+
+        // 인스타인증을 했는지 체크
+        if (instaMember != null) {
+            // 해당 인스타회원이 좋아하는 사람들 목록
+            List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
+            model.addAttribute("likeablePeople", likeablePeople);
+        }
+
+        return "usr/likeablePerson/toList";
     }
 }
