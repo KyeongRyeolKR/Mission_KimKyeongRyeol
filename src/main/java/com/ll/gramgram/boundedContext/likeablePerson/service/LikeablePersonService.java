@@ -229,12 +229,18 @@ public class LikeablePersonService {
         System.out.println("attractiveTypeCode = " + attractiveTypeCode);
         System.out.println("sortCode = " + sortCode);
 
-        if(gender == null || gender.isBlank()) {
-            return likeablePeople;
-        } else {
-            return likeablePeople.stream()
+        if(gender != null && !gender.isBlank()) {
+            likeablePeople =  likeablePeople.stream()
                     .filter(e -> e.getFromInstaMember().getGender().equals(gender))
                     .collect(Collectors.toList());
         }
+
+        if(attractiveTypeCode != null && !attractiveTypeCode.isBlank()) {
+            likeablePeople = likeablePeople.stream()
+                    .filter(e -> e.getAttractiveTypeCode() == Integer.parseInt(attractiveTypeCode))
+                    .collect(Collectors.toList());
+        }
+
+        return likeablePeople;
     }
 }
