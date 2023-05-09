@@ -239,15 +239,15 @@ public class LikeablePersonService {
                     .collect(Collectors.toList());
         }
 
-        // sortCode 가 없거나, 그 값이 공백일 경우
-        if(sortCode == null || sortCode.isBlank()) {
-            likeablePeople = likeablePeople.stream()
-                    .sorted(compareTo("1"))
-                    .collect(Collectors.toList());
-        } else {
         // sortCode 값이 있고, 그 값이 공백이 아닐 경우
+        if(sortCode != null && !sortCode.isBlank()) {
             likeablePeople = likeablePeople.stream()
                     .sorted(compareTo(sortCode))
+                    .collect(Collectors.toList());
+        } else {
+        // sortCode 가 없거나, 그 값이 공백일 경우(기본값)
+            likeablePeople = likeablePeople.stream()
+                    .sorted(compareTo("1"))
                     .collect(Collectors.toList());
         }
 
@@ -257,32 +257,19 @@ public class LikeablePersonService {
     private Comparator<LikeablePerson> compareTo(String typeCode) {
         return switch (typeCode) {
             // 최신순
-            case "1" -> Comparator.comparing(LikeablePerson::getCreateDate)
-                    .reversed();
+            case "1" -> compareTo("2").reversed();
             // 날짜순
             case "2" -> Comparator.comparing(LikeablePerson::getCreateDate);
             // 인기 많은 순
-            case "3" ->
-                    Comparator.comparingInt((LikeablePerson o) -> o.getFromInstaMember().getToLikeablePeople().size())
-                            .reversed();
+            case "3" -> Comparator.comparingInt((LikeablePerson o) -> o.getFromInstaMember().getToLikeablePeople().size()).reversed();
             // 인기 적은 순
             case "4" -> Comparator.comparingInt(o -> o.getFromInstaMember().getToLikeablePeople().size());
             // 성별순
-            case "5" -> Comparator.comparing((LikeablePerson o) -> o.getFromInstaMember().getGender())
-                    .reversed()
-                    .thenComparing(
-                            Comparator.comparing(LikeablePerson::getCreateDate)
-                                    .reversed()
-                    );
+            case "5" -> Comparator.comparing((LikeablePerson o) -> o.getFromInstaMember().getGender()).reversed().thenComparing(compareTo("1"));
             // 호감사유순
-            case "6" -> Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode)
-                    .thenComparing(
-                            Comparator.comparing(LikeablePerson::getCreateDate)
-                                    .reversed()
-                    );
+            case "6" -> Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode).thenComparing(compareTo("1"));
             // 잘못된 인자를 넣을 경우 -> 최신순
-            default -> Comparator.comparing(LikeablePerson::getCreateDate)
-                    .reversed();
+            default -> compareTo("1");
         };
     }
 }
