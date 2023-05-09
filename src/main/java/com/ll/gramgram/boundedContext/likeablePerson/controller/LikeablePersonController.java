@@ -123,15 +123,11 @@ public class LikeablePersonController {
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/toList")
-    public String showToList(Model model, HttpServletRequest request) {
+    public String showToList(Model model, @RequestParam(defaultValue = "") String gender, @RequestParam(defaultValue = "0") int attractiveTypeCode, @RequestParam(defaultValue = "0") int sortCode) {
         InstaMember instaMember = rq.getMember().getInstaMember();
 
         // 인스타인증을 했는지 체크
         if (instaMember != null) {
-            String gender = request.getParameter("gender");
-            String attractiveTypeCode = request.getParameter("attractiveTypeCode");
-            String sortCode = request.getParameter("sortCode");
-
             List<LikeablePerson> likeablePeople = likeablePersonService.listing(instaMember, gender, attractiveTypeCode, sortCode);
 
             model.addAttribute("likeablePeople", likeablePeople);

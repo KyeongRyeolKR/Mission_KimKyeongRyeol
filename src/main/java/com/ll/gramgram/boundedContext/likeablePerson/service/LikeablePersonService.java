@@ -222,54 +222,53 @@ public class LikeablePersonService {
         return RsData.of("S-1", "호감사유변경이 가능합니다.");
     }
 
-    public List<LikeablePerson> listing(InstaMember instaMember, String gender, String attractiveTypeCode, String sortCode) {
+    public List<LikeablePerson> listing(InstaMember instaMember, String gender, int attractiveTypeCode, int sortCode) {
         List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
 
-        // gender 값이 있고, 그 값이 공백이 아닐 경우
-        if(gender != null && !gender.isBlank()) {
-            likeablePeople =  likeablePeople.stream()
-                    .filter(e -> e.getFromInstaMember().getGender().equals(gender))
-                    .collect(Collectors.toList());
+        // gender 값이 "M" 또는 "W" 일 경우
+        if(gender.equals("M") || gender.equals("W")) {
+            likeablePeople = filteringBy(gender, likeablePeople);
         }
 
-        // attractiveTypeCode 값이 있고, 그 값이 공백이 아닐 경우
-        if(attractiveTypeCode != null && !attractiveTypeCode.isBlank()) {
-            likeablePeople = likeablePeople.stream()
-                    .filter(e -> e.getAttractiveTypeCode() == Integer.parseInt(attractiveTypeCode))
-                    .collect(Collectors.toList());
+        // attractiveTypeCode 값이 1 ~ 3 사이일 경우
+        if(attractiveTypeCode > 0 && attractiveTypeCode < 4) {
+            likeablePeople = filteringBy(attractiveTypeCode, likeablePeople);
         }
 
-        // sortCode 값이 있고, 그 값이 공백이 아닐 경우
-        if(sortCode != null && !sortCode.isBlank()) {
-            likeablePeople = likeablePeople.stream()
-                    .sorted(compareTo(sortCode))
-                    .collect(Collectors.toList());
-        } else {
-        // sortCode 가 없거나, 그 값이 공백일 경우(기본값)
-            likeablePeople = likeablePeople.stream()
-                    .sorted(compareTo("1"))
-                    .collect(Collectors.toList());
-        }
-
-        return likeablePeople;
+        return likeablePeople.stream()
+                .sorted(compareTo(sortCode))
+                .collect(Collectors.toList());
     }
 
-    private Comparator<LikeablePerson> compareTo(String typeCode) {
+    private List<LikeablePerson> filteringBy(int attractiveTypeCode, List<LikeablePerson> likeablePeople) {
+        return likeablePeople.stream()
+                .filter(e -> e.getAttractiveTypeCode() == attractiveTypeCode)
+                .collect(Collectors.toList());
+    }
+
+    private List<LikeablePerson> filteringBy(String gender, List<LikeablePerson> likeablePeople) {
+        return likeablePeople.stream()
+                .filter(e -> e.getFromInstaMember().getGender().equals(gender))
+                .collect(Collectors.toList());
+    }
+
+    private Comparator<LikeablePerson> compareTo(int typeCode) {
         return switch (typeCode) {
             // 최신순
-            case "1" -> compareTo("2").reversed();
+            case 1 -> compareTo(2).reversed();
             // 날짜순
-            case "2" -> Comparator.comparing(LikeablePerson::getCreateDate);
+            case 2 -> Comparator.comparing(LikeablePerson::getCreateDate);
             // 인기 많은 순
-            case "3" -> Comparator.comparingInt((LikeablePerson o) -> o.getFromInstaMember().getToLikeablePeople().size()).reversed();
+            case 3 -> Comparator.comparingInt((LikeablePerson o) -> o.getFromInstaMember().getToLikeablePeople().size()).reversed();
             // 인기 적은 순
-            case "4" -> Comparator.comparingInt(o -> o.getFromInstaMember().getToLikeablePeople().size());
+            case 4 -> Comparator.comparingInt(o -> o.getFromInstaMember().getToLikeablePeople().size());
             // 성별순
-            case "5" -> Comparator.comparing((LikeablePerson o) -> o.getFromInstaMember().getGender()).reversed().thenComparing(compareTo("1"));
+            case 5 -> Comparator.comparing((LikeablePerson o) -> o.getFromInstaMember().getGender()).reversed().thenComparing(compareTo(1));
             // 호감사유순
-            case "6" -> Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode).thenComparing(compareTo("1"));
+            case 6 -> Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode).thenComparing(compareTo(1));
             // 잘못된 인자를 넣을 경우 -> 최신순
-            default -> compareTo("1");
+            // case 1 을 삭제하고 default 에 compare(2).reversed(); 를 넣어줘도 되지만, 명시적으로 보여주기 위해 하지 않음
+            default -> compareTo(1);
         };
     }
 }
