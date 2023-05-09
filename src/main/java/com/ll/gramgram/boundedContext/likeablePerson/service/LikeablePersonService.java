@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -225,22 +225,64 @@ public class LikeablePersonService {
     public List<LikeablePerson> listing(InstaMember instaMember, String gender, String attractiveTypeCode, String sortCode) {
         List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
 
-        System.out.println("gender = " + gender);
-        System.out.println("attractiveTypeCode = " + attractiveTypeCode);
-        System.out.println("sortCode = " + sortCode);
-
+        // gender 값이 있고, 그 값이 공백이 아닐 경우
         if(gender != null && !gender.isBlank()) {
             likeablePeople =  likeablePeople.stream()
                     .filter(e -> e.getFromInstaMember().getGender().equals(gender))
                     .collect(Collectors.toList());
         }
 
+        // attractiveTypeCode 값이 있고, 그 값이 공백이 아닐 경우
         if(attractiveTypeCode != null && !attractiveTypeCode.isBlank()) {
             likeablePeople = likeablePeople.stream()
                     .filter(e -> e.getAttractiveTypeCode() == Integer.parseInt(attractiveTypeCode))
                     .collect(Collectors.toList());
         }
 
+        // sortCode 가 없거나, 그 값이 공백일 경우
+        if(sortCode == null || sortCode.isBlank()) {
+            likeablePeople = likeablePeople.stream()
+                    .sorted(compareTo("1"))
+                    .collect(Collectors.toList());
+        } else {
+        // sortCode 값이 있고, 그 값이 공백이 아닐 경우
+            likeablePeople = likeablePeople.stream()
+                    .sorted(compareTo(sortCode))
+                    .collect(Collectors.toList());
+        }
+
         return likeablePeople;
+    }
+
+    private Comparator<LikeablePerson> compareTo(String typeCode) {
+        return switch (typeCode) {
+            // 최신순
+            case "1" -> Comparator.comparing(LikeablePerson::getCreateDate)
+                    .reversed();
+            // 날짜순
+            case "2" -> Comparator.comparing(LikeablePerson::getCreateDate);
+            // 인기 많은 순
+            case "3" ->
+                    Comparator.comparingInt((LikeablePerson o) -> o.getFromInstaMember().getToLikeablePeople().size())
+                            .reversed();
+            // 인기 적은 순
+            case "4" -> Comparator.comparingInt(o -> o.getFromInstaMember().getToLikeablePeople().size());
+            // 성별순
+            case "5" -> Comparator.comparing((LikeablePerson o) -> o.getFromInstaMember().getGender())
+                    .reversed()
+                    .thenComparing(
+                            Comparator.comparing(LikeablePerson::getCreateDate)
+                                    .reversed()
+                    );
+            // 호감사유순
+            case "6" -> Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode)
+                    .thenComparing(
+                            Comparator.comparing(LikeablePerson::getCreateDate)
+                                    .reversed()
+                    );
+            // 잘못된 인자를 넣을 경우 -> 최신순
+            default -> Comparator.comparing(LikeablePerson::getCreateDate)
+                    .reversed();
+        };
     }
 }
