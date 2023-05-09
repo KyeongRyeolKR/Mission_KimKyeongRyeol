@@ -222,6 +222,7 @@ public class LikeablePersonService {
         return RsData.of("S-1", "호감사유변경이 가능합니다.");
     }
 
+    // 매개변수를 기준으로 목록화 해주는 메소드
     public List<LikeablePerson> listing(InstaMember instaMember, String gender, int attractiveTypeCode, int sortCode) {
         List<LikeablePerson> likeablePeople = instaMember.getToLikeablePeople();
 
@@ -235,36 +236,41 @@ public class LikeablePersonService {
             likeablePeople = filteringBy(attractiveTypeCode, likeablePeople);
         }
 
+        // sortCode 기준으로 정렬 후 반환
         return likeablePeople.stream()
                 .sorted(compareTo(sortCode))
                 .collect(Collectors.toList());
     }
 
+    // attractiveTypeCode 를 기준으로 필터링 해주는 메소드
     private List<LikeablePerson> filteringBy(int attractiveTypeCode, List<LikeablePerson> likeablePeople) {
         return likeablePeople.stream()
                 .filter(e -> e.getAttractiveTypeCode() == attractiveTypeCode)
                 .collect(Collectors.toList());
     }
 
+    // gender 를 기준으로 필터링 해주는 메소드
     private List<LikeablePerson> filteringBy(String gender, List<LikeablePerson> likeablePeople) {
         return likeablePeople.stream()
                 .filter(e -> e.getFromInstaMember().getGender().equals(gender))
                 .collect(Collectors.toList());
     }
 
+    // attractiveTypeCode 를 기준으로 그에 맞는 Comparator 객체를 반환해주는 메소드
     private Comparator<LikeablePerson> compareTo(int typeCode) {
         return switch (typeCode) {
-            // 최신순
+            // 최신순 : 날짜순(오래된순)의 반대
             case 1 -> compareTo(2).reversed();
-            // 날짜순
+            // 날짜순 : 생성일자가 작을 수록 오래된 순 -> createDate 오름차순
             case 2 -> Comparator.comparing(LikeablePerson::getCreateDate);
-            // 인기 많은 순
-            case 3 -> Comparator.comparingInt((LikeablePerson o) -> o.getFromInstaMember().getToLikeablePeople().size()).reversed();
-            // 인기 적은 순
+            // 인기 많은 순 : 인기 적은 순의 반대
+            case 3 -> compareTo(4).reversed();
+            // 인기 적은 순 : 각 호감표시 주인의 [내가 받은 호감리스트]의 크기를 기준으로 오름차순
             case 4 -> Comparator.comparingInt(o -> o.getFromInstaMember().getToLikeablePeople().size());
-            // 성별순
+            // 성별순 : 각 호감표시 주인의 성별을 내림차순으로 정렬하고, 같은 성별일 경우엔 최신순(compareTo(1))으로 한번 더 정렬
+            // 내림차순으로 정렬하는 이유 -> 문자열을 오름차순으로 정렬하면 사전순 정렬이기에 남성("M")이 먼저 나오게 되므로, 내림차순으로 정렬
             case 5 -> Comparator.comparing((LikeablePerson o) -> o.getFromInstaMember().getGender()).reversed().thenComparing(compareTo(1));
-            // 호감사유순
+            // 호감사유순 : attractiveTypeCode 오름차순으로 정렬하고, 같은 사유일 경우엔 최신순(compareTo(1))으로 한번 더 정렬
             case 6 -> Comparator.comparingInt(LikeablePerson::getAttractiveTypeCode).thenComparing(compareTo(1));
             // 잘못된 인자를 넣을 경우 -> 최신순
             // case 1 을 삭제하고 default 에 compare(2).reversed(); 를 넣어줘도 되지만, 명시적으로 보여주기 위해 하지 않음
