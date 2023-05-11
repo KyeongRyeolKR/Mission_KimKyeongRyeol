@@ -261,8 +261,8 @@ public class LikeablePersonService {
         return switch (typeCode) {
             // 최신순 : 날짜순(오래된순)의 반대
             case 1 -> compareTo(2).reversed();
-            // 날짜순 : 생성일자가 작을 수록 오래된 순 -> createDate 오름차순
-            case 2 -> Comparator.comparing(LikeablePerson::getCreateDate);
+            // 날짜순 : Id가 작을 수록 오래된 순 -> Id 오름차순
+            case 2 -> Comparator.comparing(LikeablePerson::getId);
             // 인기 많은 순 : 인기 적은 순의 반대
             case 3 -> compareTo(4).reversed();
             // 인기 적은 순 : 각 호감표시 주인의 [내가 받은 호감리스트]의 크기를 기준으로 오름차순
