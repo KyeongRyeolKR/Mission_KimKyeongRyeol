@@ -37,10 +37,14 @@ dependencies {
 
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect' // 타임리프에서 layout.html 사용하려고
 
+    // 세션을 redis에 저장하기 위한 작업
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-data-redis'
+
+    // 쿠버네티스 무중단 배포를 위한 액츄에이터
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     // Querydsl 추가
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
